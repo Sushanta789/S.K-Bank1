@@ -320,37 +320,22 @@ function login(){
     return;
   }
 
-  let saved = localStorage.getItem(CUSTOMER_KEY);
-  if(!saved){
-    msg("loginMsg", "Customer record not found. Please register first.", "error");
-    return;
-  }
+  const formData = new FormData();
+  formData.append("customer_id", custId);
+  formData.append("account_number", account);
 
-  let c = JSON.parse(saved);
+  fetch("../../customer_login.php", { method: "POST", body: formData })
+    .then(response => response.json())
+    .then(result => {
+      if(!result.success){
+        msg("loginMsg", result.message, "error");
+        return;
+      }
 
-  // Validate credentials
-  if(
-    (c.customerId || "").toUpperCase() !== custId ||
-    (c.accountNumber || "").toUpperCase() !== account
-  ){
-    msg("loginMsg", "Invalid Customer ID or Account Number.", "error");
-    return;
-  }
-
-  // Check Manager Approval
-  if(!c.managerApproval){
-    msg("loginMsg", "❌ Account Not Approved: Waiting for Manager approval.", "error");
-    return;
-  }
-
-  // Check Employee Final Approval
-  if(!c.employeeApproval){
-    msg("loginMsg", "⏳ Account Pending: Manager approved. Waiting for Employee final approval.", "error");
-    return;
-  }
-
-  // Both approved -> Allow Login
-  showProfile(c);
+      localStorage.setItem(CUSTOMER_KEY, JSON.stringify(result.customer));
+      showProfile(result.customer);
+    })
+    .catch(() => msg("loginMsg", "Could not connect to the shared MySQL server.", "error"));
 }
 
 function showProfile(c){

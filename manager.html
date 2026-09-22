@@ -641,17 +641,24 @@ function directApproveCustomer(accountNumber){
 
   if(!target) return;
 
-  target.managerApproval = true;
-  target.status = "MANAGER APPROVED";
+  const formData = new FormData();
+  formData.append("account_number", accountNumber);
+  formData.append("approval", "manager");
 
-  if(isArray){
-    localStorage.setItem(CUSTOMER_KEY, JSON.stringify(custData));
-  } else {
-    localStorage.setItem(CUSTOMER_KEY, JSON.stringify(target));
-  }
-
-  feedback.innerHTML = `<div class="success">✅ Customer Account <b>${escapeHTML(accountNumber)}</b> (${escapeHTML(target.fullName || "")}) has been approved at Manager level!</div>`;
-  loadDirectApprovalTables();
+  fetch("approve_customer.php", { method: "POST", body: formData })
+    .then(response => response.json())
+    .then(result => {
+      if(!result.success){
+        feedback.innerHTML = `<div class="error">${result.message}</div>`;
+        return;
+      }
+      target.managerApproval = true;
+      target.status = "MANAGER APPROVED";
+      localStorage.setItem(CUSTOMER_KEY, JSON.stringify(isArray ? custData : target));
+      feedback.innerHTML = `<div class="success">✅ Customer Account <b>${escapeHTML(accountNumber)}</b> (${escapeHTML(target.fullName || "")}) has been approved at Manager level!</div>`;
+      loadDirectApprovalTables();
+    })
+    .catch(() => feedback.innerHTML = `<div class="error">Could not connect to the shared MySQL server.</div>`);
 }
 
 /* TRANSFER TO EMPLOYEE WITH 10% CASHBACK */

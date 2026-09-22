@@ -712,13 +712,25 @@ function approveCustomer(){
     return;
   }
 
-  customer.employeeApproval = true;
-  customer.accountActive = true;
-  customer.status = "APPROVED";
+  const formData = new FormData();
+  formData.append("account_number", customer.accountNumber);
+  formData.append("approval", "employee");
 
-  localStorage.setItem(CUSTOMER_KEY, JSON.stringify(customer));
-  showCustomer();
-  alert("Customer approved successfully. Account is now active.");
+  fetch("../approve_customer.php", { method: "POST", body: formData })
+    .then(response => response.json())
+    .then(result => {
+      if(!result.success){
+        alert(result.message);
+        return;
+      }
+      customer.employeeApproval = true;
+      customer.accountActive = true;
+      customer.status = "APPROVED";
+      localStorage.setItem(CUSTOMER_KEY, JSON.stringify(customer));
+      showCustomer();
+      alert("Customer approved successfully. Account is now active.");
+    })
+    .catch(() => alert("Could not connect to the shared MySQL server."));
 }
 
 function showTransactions(){
