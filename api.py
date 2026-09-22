@@ -17,11 +17,13 @@ def add_cors_headers(response):
 
 
 def db_connection(with_database=True):
+    db_host = os.getenv("DB_HOST", "127.0.0.1")
+    default_password = "Sushanta@1430" if db_host in {"127.0.0.1", "localhost"} else ""
     config = {
-        "host": os.getenv("DB_HOST", "127.0.0.1"),
+        "host": db_host,
         "port": int(os.getenv("DB_PORT", "3306")),
         "user": os.getenv("DB_USER", "root"),
-        "password": os.getenv("DB_PASSWORD", ""),
+        "password": os.getenv("DB_PASSWORD", default_password),
     }
     if with_database:
         config["database"] = os.getenv("DB_NAME", "sk_bank")
