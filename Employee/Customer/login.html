@@ -335,7 +335,9 @@ function login(){
       localStorage.setItem(CUSTOMER_KEY, JSON.stringify(result.customer));
       showProfile(result.customer);
     })
-    .catch(() => msg("loginMsg", "Could not connect to the shared MySQL server.", "error"));
+    .catch(() => msg("loginMsg", window.location.hostname.endsWith("github.io")
+      ? "GitHub Pages cannot run PHP or connect to MySQL. Use the XAMPP URL or configure a hosted PHP API."
+      : "Could not connect to the PHP/MySQL server.", "error"));
 }
 
 function showProfile(c){

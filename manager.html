@@ -475,7 +475,10 @@ function saveManager(fullName, dob, mobile, email, password, photo, accountNumbe
       setTimeout(showLogin, 1200);
     })
     .catch(() => {
-      document.getElementById("registerMessage").innerHTML = `<div class="error">Could not connect to the XAMPP MySQL server.</div>`;
+      const message = window.location.hostname.endsWith("github.io")
+        ? "GitHub Pages cannot run PHP or connect to MySQL. Use the XAMPP URL or configure a hosted PHP API."
+        : "Could not connect to the PHP/MySQL server.";
+      document.getElementById("registerMessage").innerHTML = `<div class="error">${message}</div>`;
     });
 }
 
@@ -658,7 +661,9 @@ function directApproveCustomer(accountNumber){
       feedback.innerHTML = `<div class="success">✅ Customer Account <b>${escapeHTML(accountNumber)}</b> (${escapeHTML(target.fullName || "")}) has been approved at Manager level!</div>`;
       loadDirectApprovalTables();
     })
-    .catch(() => feedback.innerHTML = `<div class="error">Could not connect to the shared MySQL server.</div>`);
+    .catch(() => feedback.innerHTML = `<div class="error">${window.location.hostname.endsWith("github.io")
+      ? "GitHub Pages cannot run PHP or connect to MySQL."
+      : "Could not connect to the PHP/MySQL server."}</div>`);
 }
 
 /* TRANSFER TO EMPLOYEE WITH 10% CASHBACK */

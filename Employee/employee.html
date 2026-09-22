@@ -429,7 +429,10 @@ function saveEmployee(firstName, lastName, mobile, email, dob, password, photo, 
       setTimeout(showLogin, 2500);
     })
     .catch(() => {
-      document.getElementById("registerMessage").innerHTML = `<div class="error">Could not connect to the XAMPP MySQL server.</div>`;
+      const message = window.location.hostname.endsWith("github.io")
+        ? "GitHub Pages cannot run PHP or connect to MySQL. Use the XAMPP URL or configure a hosted PHP API."
+        : "Could not connect to the PHP/MySQL server.";
+      document.getElementById("registerMessage").innerHTML = `<div class="error">${message}</div>`;
     });
 }
 
@@ -730,7 +733,9 @@ function approveCustomer(){
       showCustomer();
       alert("Customer approved successfully. Account is now active.");
     })
-    .catch(() => alert("Could not connect to the shared MySQL server."));
+    .catch(() => alert(window.location.hostname.endsWith("github.io")
+      ? "GitHub Pages cannot run PHP or connect to MySQL. Use the XAMPP URL or configure a hosted PHP API."
+      : "Could not connect to the PHP/MySQL server."));
 }
 
 function showTransactions(){

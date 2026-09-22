@@ -489,7 +489,9 @@ function registerCustomer(){
       );
       window.location.href = "login.html";
     })
-    .catch(() => msg("registerMsg", "Could not connect to the XAMPP MySQL server.", "error"));
+    .catch(() => msg("registerMsg", window.location.hostname.endsWith("github.io")
+      ? "GitHub Pages cannot run PHP or connect to MySQL. Open this project through XAMPP, or configure a hosted PHP API."
+      : "Could not connect to the PHP/MySQL server.", "error"));
 }
 </script>
 
