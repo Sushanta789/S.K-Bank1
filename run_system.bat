@@ -17,11 +17,17 @@ if not exist "%TARGET_DIR%" (
 
 xcopy "%ROOT%*" "%TARGET_DIR%\" /E /Y /I >nul 2>&1
 
+where python >nul 2>&1
+if %errorlevel%==0 (
+    start "S.K Bank Python API" /D "%ROOT%" python api.py
+)
+
 start "" "http://localhost/sk-bank/index.html"
 
 echo.
 echo S.K Bank system is starting...
 echo Open the browser when XAMPP is ready.
+echo Same Wi-Fi device URL: http://10.207.184.55/sk-bank/index.html
 echo MySQL password: Sushanta@1430
 echo.
 

@@ -1,3 +1,7 @@
-// Set this to the public URL of the deployed Python API, ending with /api.
-// Example: https://your-python-api.example.com/api
-const API_BASE_URL = window.SK_BANK_API_URL || "http://127.0.0.1:5000/api";
+// Set SK_BANK_API_URL to a public API URL when deploying the frontend online.
+const currentHost = window.location.hostname || "127.0.0.1";
+const API_BASE_URL = window.SK_BANK_API_URL || (
+	currentHost.endsWith("github.io")
+		? ""
+		: "http://" + currentHost + ":5000/api"
+);
