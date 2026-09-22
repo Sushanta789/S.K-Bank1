@@ -5,10 +5,10 @@ set "ROOT=%~dp0"
 set "XAMPP_DIR=C:\xampp"
 set "TARGET_DIR=%XAMPP_DIR%\htdocs\sk-bank"
 
-if exist "%XAMPP_DIR%\xampp-control.exe" (
-    start "" "%XAMPP_DIR%\xampp-control.exe"
-) else if exist "%XAMPP_DIR%\xampp_start.exe" (
+if exist "%XAMPP_DIR%\xampp_start.exe" (
     start "" "%XAMPP_DIR%\xampp_start.exe"
+) else if exist "%XAMPP_DIR%\xampp-control.exe" (
+    start "" "%XAMPP_DIR%\xampp-control.exe"
 )
 
 if not exist "%TARGET_DIR%" (
