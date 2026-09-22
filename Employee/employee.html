@@ -398,18 +398,39 @@ function saveEmployee(firstName, lastName, mobile, email, dob, password, photo, 
     createdAt: new Date().toISOString()
   };
 
-  localStorage.setItem(EMPLOYEE_KEY, JSON.stringify(employee));
+  const formData = new FormData();
+  formData.append("role", "employee");
+  formData.append("name", employee.fullName);
+  formData.append("mobile", mobile);
+  formData.append("email", email);
+  formData.append("dob", dob);
+  formData.append("password", password);
+  formData.append("photo", photo);
+  formData.append("account_number", accountNumber);
+  formData.append("pin", pin);
 
-  document.getElementById("registerMessage").innerHTML = `
-    <div class="success">
-      <h3>✅ Registration Submitted</h3>
-      <p><b>Account Number:</b> ${accountNumber}</p>
-      <p><b>4-Digit PIN:</b> ${pin}</p>
-      <p><b>Status:</b> ⏳ Pending Manager Approval</p>
-      <p class="small">You cannot login until your manager approves your account.</p>
-    </div>
-  `;
-  setTimeout(showLogin, 2500);
+  fetch("../register.php", { method: "POST", body: formData })
+    .then(response => response.json())
+    .then(result => {
+      if(!result.success){
+        document.getElementById("registerMessage").innerHTML = `<div class="error">${result.message}</div>`;
+        return;
+      }
+      localStorage.setItem(EMPLOYEE_KEY, JSON.stringify(employee));
+      document.getElementById("registerMessage").innerHTML = `
+        <div class="success">
+          <h3>✅ Registration Submitted</h3>
+          <p><b>Account Number:</b> ${accountNumber}</p>
+          <p><b>4-Digit PIN:</b> ${pin}</p>
+          <p><b>Status:</b> ⏳ Pending Manager Approval</p>
+          <p class="small">You cannot login until your manager approves your account.</p>
+        </div>
+      `;
+      setTimeout(showLogin, 2500);
+    })
+    .catch(() => {
+      document.getElementById("registerMessage").innerHTML = `<div class="error">Could not connect to the XAMPP MySQL server.</div>`;
+    });
 }
 
 function loginEmployee(){

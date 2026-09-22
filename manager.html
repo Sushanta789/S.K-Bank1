@@ -453,9 +453,30 @@ function saveManager(fullName, dob, mobile, email, password, photo, accountNumbe
     createdAt: new Date().toISOString()
   };
 
-  localStorage.setItem(MANAGER_KEY, JSON.stringify(manager));
-  document.getElementById("registerMessage").innerHTML = `<div class="success">Manager Account Created: <b>${accountNumber}</b></div>`;
-  setTimeout(showLogin, 1200);
+  const formData = new FormData();
+  formData.append("role", "manager");
+  formData.append("name", fullName);
+  formData.append("dob", dob);
+  formData.append("mobile", mobile);
+  formData.append("email", email);
+  formData.append("password", password);
+  formData.append("photo", photo);
+  formData.append("account_number", accountNumber);
+
+  fetch("register.php", { method: "POST", body: formData })
+    .then(response => response.json())
+    .then(result => {
+      if(!result.success){
+        document.getElementById("registerMessage").innerHTML = `<div class="error">${result.message}</div>`;
+        return;
+      }
+      localStorage.setItem(MANAGER_KEY, JSON.stringify(manager));
+      document.getElementById("registerMessage").innerHTML = `<div class="success">Manager Account Created: <b>${accountNumber}</b></div>`;
+      setTimeout(showLogin, 1200);
+    })
+    .catch(() => {
+      document.getElementById("registerMessage").innerHTML = `<div class="error">Could not connect to the XAMPP MySQL server.</div>`;
+    });
 }
 
 function loginManager(){

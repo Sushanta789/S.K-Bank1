@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS managers (
     email VARCHAR(150) DEFAULT NULL,
     account_no VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    dob DATE DEFAULT NULL,
+    photo LONGTEXT DEFAULT NULL,
     status ENUM('approved','pending') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -26,6 +28,9 @@ CREATE TABLE IF NOT EXISTS employees (
     email VARCHAR(150) DEFAULT NULL,
     account_no VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    pin VARCHAR(10) DEFAULT NULL,
+    dob DATE DEFAULT NULL,
+    photo LONGTEXT DEFAULT NULL,
     status ENUM('approved','pending') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -37,6 +42,10 @@ CREATE TABLE IF NOT EXISTS customers (
     email VARCHAR(150) DEFAULT NULL,
     account_no VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    customer_id VARCHAR(50) UNIQUE NOT NULL,
+    gender VARCHAR(20) DEFAULT NULL,
+    dob DATE DEFAULT NULL,
+    photo LONGTEXT DEFAULT NULL,
     balance DECIMAL(12,2) DEFAULT 0.00,
     status ENUM('approved','pending') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -50,6 +59,22 @@ CREATE TABLE IF NOT EXISTS transactions (
     description VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Upgrade databases created by an earlier version of this project.
+ALTER TABLE managers
+    ADD COLUMN IF NOT EXISTS dob DATE DEFAULT NULL,
+    ADD COLUMN IF NOT EXISTS photo LONGTEXT DEFAULT NULL;
+
+ALTER TABLE employees
+    ADD COLUMN IF NOT EXISTS pin VARCHAR(10) DEFAULT NULL,
+    ADD COLUMN IF NOT EXISTS dob DATE DEFAULT NULL,
+    ADD COLUMN IF NOT EXISTS photo LONGTEXT DEFAULT NULL;
+
+ALTER TABLE customers
+    ADD COLUMN IF NOT EXISTS customer_id VARCHAR(50) NULL,
+    ADD COLUMN IF NOT EXISTS gender VARCHAR(20) DEFAULT NULL,
+    ADD COLUMN IF NOT EXISTS dob DATE DEFAULT NULL,
+    ADD COLUMN IF NOT EXISTS photo LONGTEXT DEFAULT NULL;
 
 INSERT INTO admins (username, password) VALUES
 ('admin', '$2y$10$8J8Gz5n0M4tvz/2l6sL7sOhxVQY4jH6MZ1xkN7vG2f7nA0Qk8l1G');

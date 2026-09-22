@@ -1,5 +1,5 @@
 <?php
-$host = 'localhost';
+$host = 'www.skbank.com';
 $dbUser = 'root';
 $dbPass = 'Sushanta@1430';
 $dbName = 'sk_bank';
