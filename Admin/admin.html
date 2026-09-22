@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.K Zero Balance Bank - Master Admin Panel</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#020617,#0f172a,#1e1b4b);
+  color:white;
+  padding:20px;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+}
+
+.card{
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(15px);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;
+  padding:25px;
+  margin-bottom:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,.35);
+  animation:slideUp .5s ease;
+}
+
+@keyframes slideUp{
+  from{ opacity:0; transform:translateY(25px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+.admin-header{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.admin-header h1{
+  font-size:28px;
+  color:#a78bfa;
+  margin-bottom:6px;
+}
+
+.admin-header p{
+  color:#94a3b8;
+  font-size:14px;
+}
+
+input, select{
+  width:100%;
+  padding:14px;
+  margin:8px 0;
+  border:none;
+  border-radius:12px;
+  background:#f8fafc;
+  color:#111827;
+  font-size:15px;
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#7c3aed,#6366f1);
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px rgba(124,58,237,.45);
+}
+
+.btn-danger{ background:#dc2626; }
+.btn-sm{
+  width:auto;
+  margin:0;
+  padding:8px 16px;
+  font-size:13px;
+  border-radius:8px;
+}
+
+.table-container{
+  overflow-x:auto;
+  margin-top:15px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+  text-align:left;
+}
+
+th, td{
+  padding:12px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+th{
+  color:#c4b5fd;
+  background:rgba(0,0,0,.25);
+}
+
+tr:hover{
+  background:rgba(255,255,255,.04);
+}
+
+.credential-field{
+  font-family:monospace;
+  background:rgba(0,0,0,.35);
+  padding:4px 8px;
+  border-radius:6px;
+  color:#fcd34d;
+}
+
+.data-box{
+  background:rgba(255,255,255,.06);
+  padding:18px;
+  border-radius:15px;
+  margin-top:15px;
+  line-height:1.9;
+}
+
+.box-photo{
+  width:100px;
+  height:100px;
+  object-fit:cover;
+  border-radius:50%;
+  display:block;
+  margin:10px auto 15px;
+  border:3px solid #a78bfa;
+}
+
+.transaction-card{
+  background:rgba(255,255,255,.05);
+  border-left:4px solid #a78bfa;
+  padding:12px 16px;
+  border-radius:10px;
+  margin-top:10px;
+  line-height:1.7;
+}
+
+.hidden{ display:none; }
+
+.msg{
+  padding:14px;
+  border-radius:12px;
+  margin-top:15px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.msg-error{ background:rgba(239,68,68,.15); border:1px solid #ef4444; color:#fecaca; }
+.msg-success{ background:rgba(34,197,94,.15); border:1px solid #22c55e; color:#bbf7d0; }
+.small{ font-size:13px; color:#94a3b8; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- ADMIN LOGIN -->
+<div id="adminLoginSection" class="card">
+  <div class="admin-header">
+    <h1>🛡️ Master Admin Portal</h1>
+    <p>Central Banking Management & Inspection Directory</p>
+  </div>
+
+  <input type="text" id="adminUser" placeholder="Enter Username">
+  <input type="password" id="adminPass" placeholder="Enter Password">
+  <button onclick="loginAdmin()">Login to Portal</button>
+  <div id="loginFeedback"></div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="adminDashboard" class="hidden">
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+      <div>
+        <h2>📋 Central Administration Console</h2>
+        <p style="color:#94a3b8;font-size:14px;">Authorized Administrator: <b>Sushanta Kalaka</b></p>
+      </div>
+      <button onclick="logoutAdmin()" class="btn-danger btn-sm">Logout</button>
+    </div>
+    <button type="button" onclick="window.location.href='../Manager/deposit.html'">Deposit Money</button>
+  </div>
+
+  <!-- CHECK DETAILS BY ACCOUNT NUMBER ONLY (WITH ROLE SELECTOR) -->
+  <div class="card">
+    <h2>🔍 Inspect Account Details</h2>
+    <p class="small">Select the role and input only the Account Number to show all account data.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
+      <select id="inspectRole">
+        <option value="manager">Manager</option>
+        <option value="employee">Employee</option>
+        <option value="customer">Customer</option>
+      </select>
+      <input type="text" id="inspectAccountNo" placeholder="Enter Account Number (SKM... / SKE... / SKCA...)">
+    </div>
+
+    <button onclick="inspectAccountDetails()">Search & Show All Details</button>
+    <div id="inspectResultContainer"></div>
+  </div>
+
+  <!-- CHECK TRANSACTION HISTORY (WITH DATE TIME) -->
+  <div class="card">
+    <h2>🕒 Audit Transaction History</h2>
+    <p class="small">Choose an account role and input its Account Number to view complete transaction logs with timestamps.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
+      <select id="historyRole">
+        <option value="manager">Manager</option>
+        <option value="employee">Employee</option>
+        <option value="customer">Customer</option>
+      </select>
+      <input type="text" id="historyAccountNo" placeholder="Enter Account Number">
+    </div>
+
+    <button onclick="checkTransactionHistory()">Fetch Transaction Logs</button>
+    <div id="historyResultContainer"></div>
+  </div>
+
+  <!-- MANAGER ACCOUNT RECORD TABLE -->
+  <div class="card">
+    <h2>👨‍💼 Registered Manager Accounts</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Manager Full Name</th>
+            <th>Manager Account Number</th>
+          </tr>
+        </thead>
+        <tbody id="managerTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EMPLOYEE ACCOUNTS TABLE -->
+  <div class="card">
+    <h2>👨‍💻 Registered Employee Accounts</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Employee Full Name</th>
+            <th>Employee Account Number</th>
+          </tr>
+        </thead>
+        <tbody id="employeeTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CUSTOMER ACCOUNTS TABLE -->
+  <div class="card">
+    <h2>👤 Registered Customer Accounts</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Customer Full Name</th>
+            <th>Customer Account Number</th>
+            <th>Customer ID</th>
+          </tr>
+        </thead>
+        <tbody id="customerTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+const MANAGER_KEY = "sk_zero_balance_manager";
+const EMPLOYEE_KEY = "sk_zero_balance_employee";
+const CUSTOMER_KEY = "sk_zero_balance_customer";
+
+function loginAdmin(){
+  const user = document.getElementById("adminUser").value.trim();
+  const pass = document.getElementById("adminPass").value;
+  const feedback = document.getElementById("loginFeedback");
+
+  if(user === "Sushanta Kalaka" && pass === "Sushanta@1430"){
+    sessionStorage.setItem("sk_admin_logged_in", "true");
+    document.getElementById("adminLoginSection").classList.add("hidden");
+    document.getElementById("adminDashboard").classList.remove("hidden");
+    loadAllRecords();
+  } else {
+    feedback.innerHTML = `<div class="msg msg-error">Invalid Username or Password. Please try again.</div>`;
+  }
+}
+
+function logoutAdmin(){
+  sessionStorage.removeItem("sk_admin_logged_in");
+  document.getElementById("adminUser").value = "";
+  document.getElementById("adminPass").value = "";
+  document.getElementById("loginFeedback").innerHTML = "";
+  document.getElementById("adminDashboard").classList.add("hidden");
+  document.getElementById("adminLoginSection").classList.remove("hidden");
+}
+
+function escapeHTML(str){
+  return String(str ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+
+function formatMoney(amount){
+  return "₹" + Number(amount || 0).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function formatDateTime(dateString){
+  if(!dateString) return "N/A";
+  const date = new Date(dateString);
+  return date.toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  });
+}
+
+function getStoredArray(key){
+  const raw = localStorage.getItem(key);
+  if(!raw) return [];
+  try{
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [parsed];
+  }catch(e){
+    return [];
+  }
+}
+
+function loadAllRecords(){
+  const managers = getStoredArray(MANAGER_KEY);
+  const employees = getStoredArray(EMPLOYEE_KEY);
+  const customers = getStoredArray(CUSTOMER_KEY);
+
+  // 1. Manager Records
+  const mgrBody = document.getElementById("managerTableBody");
+  if(managers.length === 0){
+    mgrBody.innerHTML = `<tr><td colspan="2" style="text-align:center;color:#94a3b8;">No Manager accounts found.</td></tr>`;
+  } else {
+    mgrBody.innerHTML = managers.map(m => `
+      <tr>
+        <td><b>${escapeHTML(m.fullName || "N/A")}</b></td>
+        <td><span class="credential-field">${escapeHTML(m.accountNumber || "N/A")}</span></td>
+      </tr>
+    `).join("");
+  }
+
+  // 2. Employee Records
+  const empBody = document.getElementById("employeeTableBody");
+  if(employees.length === 0){
+    empBody.innerHTML = `<tr><td colspan="2" style="text-align:center;color:#94a3b8;">No Employee accounts found.</td></tr>`;
+  } else {
+    empBody.innerHTML = employees.map(e => `
+      <tr>
+        <td><b>${escapeHTML(e.fullName || "N/A")}</b></td>
+        <td><span class="credential-field">${escapeHTML(e.accountNumber || "N/A")}</span></td>
+      </tr>
+    `).join("");
+  }
+
+  // 3. Customer Records
+  const custBody = document.getElementById("customerTableBody");
+  if(customers.length === 0){
+    custBody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#94a3b8;">No Customer accounts found.</td></tr>`;
+  } else {
+    custBody.innerHTML = customers.map(c => `
+      <tr>
+        <td><b>${escapeHTML(c.fullName || "N/A")}</b></td>
+        <td><span class="credential-field">${escapeHTML(c.accountNumber || "N/A")}</span></td>
+        <td><span class="credential-field">${escapeHTML(c.customerId || "N/A")}</span></td>
+      </tr>
+    `).join("");
+  }
+}
+
+/* 1. INSPECT ACCOUNT DETAILS BY ROLE AND ACCOUNT NUMBER ONLY */
+function inspectAccountDetails(){
+  const role = document.getElementById("inspectRole").value;
+  const accNo = document.getElementById("inspectAccountNo").value.trim().toUpperCase();
+  const display = document.getElementById("inspectResultContainer");
+  display.innerHTML = "";
+
+  if(!accNo){
+    display.innerHTML = `<div class="msg msg-error">Please enter an Account Number to inspect.</div>`;
+    return;
+  }
+
+  const storageKey = role === "manager" ? MANAGER_KEY : (role === "employee" ? EMPLOYEE_KEY : CUSTOMER_KEY);
+  const records = getStoredArray(storageKey);
+  const account = records.find(r => (r.accountNumber || "").toUpperCase() === accNo);
+
+  if(!account){
+    display.innerHTML = `<div class="msg msg-error">No ${role.toUpperCase()} record found matching account number: ${escapeHTML(accNo)}</div>`;
+    return;
+  }
+
+  let specificFields = "";
+
+  if(role === "manager"){
+    specificFields = `
+      <p><b>Password:</b> <span class="credential-field">${escapeHTML(account.password || "N/A")}</span></p>
+    `;
+  } else if(role === "employee"){
+    const pin = account.pin || account.mpin || account.pinCode || account.transactionPin || "N/A";
+    specificFields = `
+      <p><b>Password:</b> <span class="credential-field">${escapeHTML(account.password || "N/A")}</span></p>
+      <p><b>PIN:</b> <span class="credential-field">${escapeHTML(pin)}</span></p>
+      <p><b>Manager Approval:</b> ${account.managerApproval ? "✅ Approved" : "❌ Pending"}</p>
+    `;
+  } else if(role === "customer"){
+    specificFields = `
+      <p><b>Customer ID:</b> <span class="credential-field">${escapeHTML(account.customerId || "N/A")}</span></p>
+      <p><b>Identification:</b> <span class="credential-field">${account.aadhaar || account.idNumber ? '[ID Redacted]' : 'N/A'}</span></p>
+      <p><b>Manager Approval:</b> ${account.managerApproval ? "✅ Approved" : "❌ Pending"}</p>
+      <p><b>Employee Approval:</b> ${account.employeeApproval ? "✅ Approved" : "❌ Pending"}</p>
+      <p><b>Account Active:</b> ${account.accountActive ? "✅ Active" : "❌ Inactive"}</p>
+    `;
+  }
+
+  display.innerHTML = `
+    <div class="data-box">
+      ${account.photo ? `<img class="box-photo" src="${account.photo}" alt="Photo">` : ""}
+      <p><b>Account Role:</b> <span style="color:#c4b5fd;font-weight:bold;">${role.toUpperCase()}</span></p>
+      <p><b>Full Name:</b> ${escapeHTML(account.fullName || "N/A")}</p>
+      <p><b>Account Number:</b> <span class="credential-field">${escapeHTML(account.accountNumber || "N/A")}</span></p>
+      <p><b>Available Balance:</b> <span style="color:#4ade80;font-weight:bold;">${formatMoney(account.balance || 0)}</span></p>
+      <p><b>Mobile Number:</b> ${escapeHTML(account.mobile || "N/A")}</p>
+      <p><b>Email ID:</b> ${escapeHTML(account.email || "N/A")}</p>
+      <p><b>Date of Birth:</b> ${escapeHTML(account.dob || "N/A")}</p>
+      ${account.gender ? `<p><b>Gender:</b> ${escapeHTML(account.gender)}</p>` : ""}
+      ${specificFields}
+      <p class="small">Registered On: ${formatDateTime(account.createdAt)}</p>
+    </div>
+  `;
+}
+
+/* 2. CHECK TRANSACTION HISTORY WITH DATE & TIME */
+function checkTransactionHistory(){
+  const role = document.getElementById("historyRole").value;
+  const accNo = document.getElementById("historyAccountNo").value.trim().toUpperCase();
+  const display = document.getElementById("historyResultContainer");
+  display.innerHTML = "";
+
+  if(!accNo){
+    display.innerHTML = `<div class="msg msg-error">Please enter an Account Number to check transaction logs.</div>`;
+    return;
+  }
+
+  const storageKey = role === "manager" ? MANAGER_KEY : (role === "employee" ? EMPLOYEE_KEY : CUSTOMER_KEY);
+  const records = getStoredArray(storageKey);
+  const account = records.find(r => (r.accountNumber || "").toUpperCase() === accNo);
+
+  if(!account){
+    display.innerHTML = `<div class="msg msg-error">No ${role.toUpperCase()} account found with number: ${escapeHTML(accNo)}</div>`;
+    return;
+  }
+
+  const txList = account.transactions || [];
+
+  if(!Array.isArray(txList) || txList.length === 0){
+    display.innerHTML = `
+      <div class="data-box">
+        <p><b>Account:</b> ${escapeHTML(account.accountNumber)} (${escapeHTML(account.fullName || "")})</p>
+        <p class="small">No transaction history recorded for this account.</p>
+      </div>
+    `;
+    return;
+  }
+
+  display.innerHTML = `
+    <div style="margin-top:15px;">
+      <p>Transaction ledger for <b>${escapeHTML(account.fullName || "")}</b> (<span class="credential-field">${escapeHTML(account.accountNumber)}</span>) &mdash; Current Balance: <b style="color:#4ade80;">${formatMoney(account.balance || 0)}</b></p>
+      ${txList.slice().reverse().map(tx => `
+        <div class="transaction-card">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
+            <b>${escapeHTML(tx.type || "Transaction")}</b>
+            <span style="color:#4ade80;font-weight:bold;">${formatMoney(tx.amount || 0)}</span>
+          </div>
+          <div class="small">
+            ${tx.id ? `Reference ID: ${escapeHTML(tx.id)} | ` : ""}
+            ${tx.account || tx.employeeAccount || tx.targetAccount || tx.managerAccount ? `Counterparty: ${escapeHTML(tx.account || tx.employeeAccount || tx.targetAccount || tx.managerAccount)} | ` : ""}
+            Balance After: ${formatMoney(tx.balanceAfter || 0)}
+          </div>
+          <div class="small" style="color:#cbd5e1;margin-top:4px;">
+            📅 <b>Date & Time:</b> ${formatDateTime(tx.dateTime || tx.date || tx.timestamp)}
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+// Auto session check
+if(sessionStorage.getItem("sk_admin_logged_in") === "true"){
+  document.getElementById("adminLoginSection").classList.add("hidden");
+  document.getElementById("adminDashboard").classList.remove("hidden");
+  loadAllRecords();
+}
+
+window.addEventListener("storage", function(){
+  if(sessionStorage.getItem("sk_admin_logged_in") === "true"){
+    loadAllRecords();
+  }
+});
+</script>
+
+</body>
+</html>

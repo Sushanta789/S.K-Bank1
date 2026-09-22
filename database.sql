@@ -1,0 +1,58 @@
+CREATE DATABASE IF NOT EXISTS sk_bank;
+USE sk_bank;
+
+CREATE TABLE IF NOT EXISTS admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS managers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    mobile VARCHAR(20) UNIQUE NOT NULL,
+    email VARCHAR(150) DEFAULT NULL,
+    account_no VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    status ENUM('approved','pending') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS employees (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    mobile VARCHAR(20) UNIQUE NOT NULL,
+    email VARCHAR(150) DEFAULT NULL,
+    account_no VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    status ENUM('approved','pending') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS customers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    mobile VARCHAR(20) UNIQUE NOT NULL,
+    email VARCHAR(150) DEFAULT NULL,
+    account_no VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    balance DECIMAL(12,2) DEFAULT 0.00,
+    status ENUM('approved','pending') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    account_no VARCHAR(50) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    amount DECIMAL(12,2) NOT NULL,
+    description VARCHAR(255) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO admins (username, password) VALUES
+('admin', '$2y$10$8J8Gz5n0M4tvz/2l6sL7sOhxVQY4jH6MZ1xkN7vG2f7nA0Qk8l1G');
+
+-- Default admin password: admin123
+-- For security, change this password after the first login.

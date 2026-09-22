@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.K Zero Balance Bank - Employee</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#020617,#172554,#1e3a8a);
+  color:white;
+  padding:20px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+}
+
+.card{
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(15px);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;
+  padding:25px;
+  margin-bottom:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,.3);
+  animation:slideUp .6s ease;
+}
+
+@keyframes slideUp{
+  from{ opacity:0; transform:translateY(30px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes pulse{
+  0%,100%{ transform:scale(1); }
+  50%{ transform:scale(1.04); }
+}
+
+.bank-title{
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+  margin-bottom:25px;
+}
+
+h1{
+  text-align:center;
+  color:#7dd3fc;
+}
+
+h2{
+  color:#93c5fd;
+  margin-bottom:18px;
+}
+
+.tabs{
+  display:flex;
+  gap:10px;
+}
+
+.tabs button{
+  flex:1;
+}
+
+input, select{
+  width:100%;
+  padding:15px;
+  margin:8px 0;
+  border:none;
+  border-radius:12px;
+  background:#f8fafc;
+  color:#111827;
+  font-size:16px;
+  outline:none;
+}
+
+input:focus, select:focus{
+  box-shadow:0 0 0 3px rgba(96,165,250,.3);
+}
+
+button{
+  width:100%;
+  padding:15px;
+  margin-top:10px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#0284c7,#2563eb);
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px rgba(37,99,235,.45);
+}
+
+.secondary{ background:#475569; }
+.logout{ background:#dc2626; }
+.approve-btn{ background:linear-gradient(135deg,#16a34a,#15803d); }
+.approve-btn:hover{ box-shadow:0 8px 25px rgba(22,163,74,.45); }
+
+.badge{
+  display:inline-block;
+  background:#10b981;
+  color:white;
+  padding:3px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.profile{ text-align:center; }
+.profile img{
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid #60a5fa;
+  margin:10px;
+  animation:pulse 2s infinite;
+}
+
+.balance{
+  font-size:36px;
+  color:#4ade80;
+  font-weight:bold;
+  margin:15px 0;
+}
+
+.info{
+  background:rgba(0,0,0,.2);
+  padding:16px;
+  border-radius:14px;
+  line-height:1.9;
+}
+
+.success{
+  margin-top:15px;
+  padding:16px;
+  background:rgba(34,197,94,.15);
+  border:1px solid #22c55e;
+  border-radius:12px;
+  color:#bbf7d0;
+  line-height:1.8;
+}
+
+.error{
+  margin-top:15px;
+  padding:16px;
+  background:rgba(239,68,68,.15);
+  border:1px solid #ef4444;
+  border-radius:12px;
+  color:#fecaca;
+  line-height:1.8;
+}
+
+.customer-box{
+  background:rgba(255,255,255,.06);
+  padding:18px;
+  border-radius:15px;
+  margin-top:15px;
+  line-height:1.9;
+}
+
+.customer-photo{
+  width:110px;
+  height:110px;
+  object-fit:cover;
+  border-radius:50%;
+  display:block;
+  margin:10px auto 20px;
+  border:3px solid #60a5fa;
+}
+
+.credential-field{
+  font-family:monospace;
+  background:rgba(0,0,0,.35);
+  padding:3px 8px;
+  border-radius:6px;
+  color:#fcd34d;
+  letter-spacing:0.5px;
+}
+
+.transaction{
+  background:rgba(255,255,255,.06);
+  padding:16px;
+  border-radius:12px;
+  margin-top:12px;
+  border-left:4px solid #60a5fa;
+  line-height:1.8;
+}
+
+.hidden{ display:none; }
+.small{ font-size:14px; color:#94a3b8; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER & TABS -->
+<div id="authHeader" class="card">
+  <div class="bank-title">🏦 S.K Zero Balance Bank</div>
+  <div class="tabs">
+    <button onclick="showRegister()">Employee Registration</button>
+    <button onclick="showLogin()" class="secondary">Employee Login</button>
+  </div>
+</div>
+
+<!-- REGISTRATION -->
+<div id="registerSection" class="card">
+  <h2>👨‍💻 Employee Registration</h2>
+  <input type="text" id="regFirstName" placeholder="First Name">
+  <input type="text" id="regLastName" placeholder="Last Name">
+  <input type="tel" id="regMobile" placeholder="Mobile Number">
+  <input type="email" id="regEmail" placeholder="Email ID">
+  <input type="date" id="regDob">
+  <label style="display:block;margin-top:10px;color:#cbd5e1;">Profile Photo</label>
+  <input type="file" id="regPhoto" accept="image/*">
+  <input type="password" id="regPassword" placeholder="Password">
+  <button onclick="registerEmployee()">Create Employee Account</button>
+  <div id="registerMessage"></div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginSection" class="card hidden">
+  <h2>🔐 Employee Login</h2>
+  <input type="email" id="loginEmail" placeholder="Employee Email ID">
+  <input type="password" id="loginPin" placeholder="Enter 4 Digit PIN" maxlength="4" inputmode="numeric">
+  <button onclick="loginEmployee()">Login</button>
+  <div id="loginMessage"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardSection" class="hidden">
+
+  <!-- PROFILE -->
+  <div class="card">
+    <div class="profile">
+      <img id="employeePhoto" src="" alt="Employee Photo">
+      <h1 id="employeeName"></h1>
+      <div class="balance" id="employeeBalance">₹0.00</div>
+    </div>
+
+    <div class="info">
+      <p><b>Bank:</b> S.K Zero Balance Bank</p>
+      <p><b>Employee Account:</b> <span id="employeeAccount"></span></p>
+      <p><b>Employee PIN:</b> <span id="employeePin"></span></p>
+      <p><b>Manager Approval:</b> <span id="employeeManagerStatus" class="badge">Approved</span></p>
+      <p><b>Mobile:</b> <span id="employeeMobile"></span></p>
+      <p><b>Email:</b> <span id="employeeEmail"></span></p>
+    </div>
+
+    <button onclick="logoutEmployee()" class="logout">Logout</button>
+  </div>
+
+  <!-- CUSTOMER REGISTRATION LINK BUTTON -->
+  <div class="card">
+    <h2>👤 Customer Registration Portal</h2>
+    <p class="small">Open the external customer onboarding portal to register new accounts.</p>
+    <button onclick="window.location.href='Customer/registration.html'">
+      Go to Customer Registration
+    </button>
+  </div>
+
+  <!-- CHECK CUSTOMER DETAILS BY MOBILE & ACCOUNT -->
+  <div class="card">
+    <h2>🔍 Check Customer Details</h2>
+    <p class="small">Enter customer Mobile Number and Account Number to view complete records.</p>
+
+    <input type="tel" id="searchCustMobile" placeholder="Customer Mobile Number" maxlength="10">
+    <input type="text" id="searchCustAccount" placeholder="Customer Account Number (e.g. SKCA...)">
+
+    <button onclick="searchCustomerDetails()">Show Customer Details</button>
+    <div id="customerSearchDetails"></div>
+  </div>
+
+  <!-- TRANSFER TO CUSTOMER WITH 10% CASHBACK -->
+  <div class="card">
+    <h2>💸 Transfer to Customer <span class="badge">🎁 10% Instant Cashback</span></h2>
+    <p class="small">Transfer balance to an approved customer account and receive an automatic 10% cashback.</p>
+
+    <input type="text" id="transferCustomerAccount" placeholder="Customer Bank Account Number (e.g. SKCA...)">
+    <input type="number" id="transferCustomerAmount" placeholder="Transfer Amount ₹" min="1" step="0.01">
+
+    <button onclick="transferToCustomer()">Transfer & Earn 10% Cashback</button>
+    <div id="transferCustMessage"></div>
+  </div>
+
+  <!-- CUSTOMER APPROVAL -->
+  <div class="card">
+    <h2>👤 Customer Approval Queue</h2>
+    <p class="small">Review manager-approved accounts and grant final active authorization.</p>
+    <button onclick="showCustomer()" class="secondary">Refresh Customer Queue</button>
+    <div id="customerSection"></div>
+  </div>
+
+  <!-- TRANSACTIONS -->
+  <div class="card">
+    <h2>📋 Employee Activity Log</h2>
+    <div id="transactionList"></div>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+const EMPLOYEE_KEY = "sk_zero_balance_employee";
+const CUSTOMER_KEY = "sk_zero_balance_customer";
+
+function showRegister(){
+  document.getElementById("authHeader").classList.remove("hidden");
+  document.getElementById("registerSection").classList.remove("hidden");
+  document.getElementById("loginSection").classList.add("hidden");
+}
+
+function showLogin(){
+  document.getElementById("authHeader").classList.remove("hidden");
+  document.getElementById("registerSection").classList.add("hidden");
+  document.getElementById("loginSection").classList.remove("hidden");
+}
+
+function generateEmployeeAccount(){
+  return "SKE" + Math.floor(10000000 + Math.random() * 90000000);
+}
+
+function generatePIN(){
+  return String(Math.floor(1000 + Math.random() * 9000));
+}
+
+function generateTransactionId(prefix="TRF"){
+  return prefix + Date.now() + Math.floor(Math.random() * 1000);
+}
+
+function registerEmployee(){
+  const firstName = document.getElementById("regFirstName").value.trim();
+  const lastName = document.getElementById("regLastName").value.trim();
+  const mobile = document.getElementById("regMobile").value.trim();
+  const email = document.getElementById("regEmail").value.trim().toLowerCase();
+  const dob = document.getElementById("regDob").value;
+  const password = document.getElementById("regPassword").value;
+  const photoFile = document.getElementById("regPhoto").files[0];
+  const message = document.getElementById("registerMessage");
+
+  if(!firstName || !lastName || !mobile || !email || !dob || !password){
+    message.innerHTML = `<div class="error">Please fill all fields.</div>`;
+    return;
+  }
+
+  if(localStorage.getItem(EMPLOYEE_KEY)){
+    message.innerHTML = `<div class="error">Employee account already exists.</div>`;
+    return;
+  }
+
+  const accountNumber = generateEmployeeAccount();
+  const pin = generatePIN();
+
+  if(photoFile){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      saveEmployee(firstName, lastName, mobile, email, dob, password, e.target.result, accountNumber, pin);
+    };
+    reader.readAsDataURL(photoFile);
+  } else {
+    saveEmployee(firstName, lastName, mobile, email, dob, password, "", accountNumber, pin);
+  }
+}
+
+function saveEmployee(firstName, lastName, mobile, email, dob, password, photo, accountNumber, pin){
+  const employee = {
+    accountNumber: accountNumber,
+    pin: pin,
+    fullName: firstName + " " + lastName,
+    mobile: mobile,
+    email: email,
+    dob: dob,
+    password: password,
+    photo: photo,
+    balance: 0,
+    managerApproval: false, // Default requires Manager Approval
+    status: "PENDING MANAGER APPROVAL",
+    transactions: [],
+    createdAt: new Date().toISOString()
+  };
+
+  localStorage.setItem(EMPLOYEE_KEY, JSON.stringify(employee));
+
+  document.getElementById("registerMessage").innerHTML = `
+    <div class="success">
+      <h3>✅ Registration Submitted</h3>
+      <p><b>Account Number:</b> ${accountNumber}</p>
+      <p><b>4-Digit PIN:</b> ${pin}</p>
+      <p><b>Status:</b> ⏳ Pending Manager Approval</p>
+      <p class="small">You cannot login until your manager approves your account.</p>
+    </div>
+  `;
+  setTimeout(showLogin, 2500);
+}
+
+function loginEmployee(){
+  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+  const pin = document.getElementById("loginPin").value.trim();
+  const message = document.getElementById("loginMessage");
+
+  const employee = JSON.parse(localStorage.getItem(EMPLOYEE_KEY));
+  if(!employee || employee.email.toLowerCase() !== email || String(employee.pin) !== pin){
+    message.innerHTML = `<div class="error">Invalid Email or PIN.</div>`;
+    return;
+  }
+
+  // Check Manager Approval
+  if(!employee.managerApproval){
+    message.innerHTML = `<div class="error">❌ Account Not Approved: Manager approval is required before logging in.</div>`;
+    return;
+  }
+
+  sessionStorage.setItem("sk_employee_logged_in", "true");
+  showDashboard();
+}
+
+function showDashboard(){
+  const employee = JSON.parse(localStorage.getItem(EMPLOYEE_KEY));
+  if(!employee) return;
+
+  // Double check approval status on render
+  if(!employee.managerApproval){
+    logoutEmployee();
+    return;
+  }
+
+  document.getElementById("authHeader").classList.add("hidden");
+  document.getElementById("registerSection").classList.add("hidden");
+  document.getElementById("loginSection").classList.add("hidden");
+  document.getElementById("dashboardSection").classList.remove("hidden");
+
+  document.getElementById("employeeName").textContent = employee.fullName;
+  document.getElementById("employeeAccount").textContent = employee.accountNumber;
+  document.getElementById("employeePin").textContent = employee.pin;
+  document.getElementById("employeeMobile").textContent = employee.mobile;
+  document.getElementById("employeeEmail").textContent = employee.email;
+  document.getElementById("employeeBalance").textContent = formatMoney(employee.balance);
+  document.getElementById("employeePhoto").src = employee.photo || createDefaultPhoto();
+
+  showTransactions();
+  showCustomer();
+}
+
+/* SEARCH CUSTOMER DETAILS (INPUT MOBILE NUMBER AND ACCOUNT NUMBER) */
+function searchCustomerDetails(){
+  const searchMobile = document.getElementById("searchCustMobile").value.trim();
+  const searchAccount = document.getElementById("searchCustAccount").value.trim().toUpperCase();
+  const container = document.getElementById("customerSearchDetails");
+  container.innerHTML = "";
+
+  if(!searchMobile || !searchAccount){
+    container.innerHTML = `<div class="error">Please enter both Mobile Number and Account Number.</div>`;
+    return;
+  }
+
+  const rawCustomer = localStorage.getItem(CUSTOMER_KEY);
+  if(!rawCustomer){
+    container.innerHTML = `<div class="error">No customer records found in system.</div>`;
+    return;
+  }
+
+  const customerData = JSON.parse(rawCustomer);
+  let matched = null;
+
+  if(Array.isArray(customerData)){
+    matched = customerData.find(c => 
+      String(c.mobile).trim() === searchMobile && 
+      (c.accountNumber || "").toUpperCase() === searchAccount
+    );
+  } else {
+    if(
+      String(customerData.mobile).trim() === searchMobile && 
+      (customerData.accountNumber || "").toUpperCase() === searchAccount
+    ){
+      matched = customerData;
+    }
+  }
+
+  if(!matched){
+    container.innerHTML = `<div class="error">No matching customer found with this Mobile and Account Number.</div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="customer-box">
+      <img class="customer-photo" src="${matched.photo || createDefaultPhoto()}" alt="Customer Photo">
+      <p><b>Full Name:</b> ${escapeHTML(matched.fullName || "N/A")}</p>
+      <p><b>Customer ID:</b> <span class="credential-field">${escapeHTML(matched.customerId || "N/A")}</span></p>
+      <p><b>Account Number:</b> <span class="credential-field">${escapeHTML(matched.accountNumber || "N/A")}</span></p>
+      <p><b>Current Balance:</b> <span style="color:#4ade80;font-weight:bold;">${formatMoney(matched.balance || 0)}</span></p>
+      <p><b>Mobile Number:</b> ${escapeHTML(matched.mobile || "N/A")}</p>
+      <p><b>Email ID:</b> ${escapeHTML(matched.email || "N/A")}</p>
+      <p><b>Gender:</b> ${escapeHTML(matched.gender || "N/A")}</p>
+      <p><b>Date of Birth:</b> ${escapeHTML(matched.dob || "N/A")}</p>
+      <p><b>Manager Approval:</b> ${matched.managerApproval ? "✅ Approved" : "❌ Pending"}</p>
+      <p><b>Employee Approval:</b> ${matched.employeeApproval ? "✅ Approved" : "⏳ Pending"}</p>
+      <p><b>Account Status:</b> ${matched.accountActive ? "<span style='color:#4ade80;font-weight:bold;'>ACTIVE</span>" : "<span style='color:#f87171;font-weight:bold;'>INACTIVE</span>"}</p>
+    </div>
+  `;
+}
+
+/* TRANSFER TO CUSTOMER ACCOUNT WITH 10% CASHBACK */
+function transferToCustomer(){
+  const accountInput = document.getElementById("transferCustomerAccount").value.trim().toUpperCase();
+  const amount = Number(document.getElementById("transferCustomerAmount").value);
+  const msgBox = document.getElementById("transferCustMessage");
+  msgBox.innerHTML = "";
+
+  const employee = JSON.parse(localStorage.getItem(EMPLOYEE_KEY));
+  const rawCustomer = localStorage.getItem(CUSTOMER_KEY);
+
+  if(!employee){
+    msgBox.innerHTML = `<div class="error">Employee session not found.</div>`;
+    return;
+  }
+  if(!rawCustomer){
+    msgBox.innerHTML = `<div class="error">No customer records in system.</div>`;
+    return;
+  }
+
+  let customerData = JSON.parse(rawCustomer);
+  let customer = null;
+  let isArray = Array.isArray(customerData);
+
+  if(isArray){
+    customer = customerData.find(c => (c.accountNumber || "").toUpperCase() === accountInput);
+  } else {
+    if((customerData.accountNumber || "").toUpperCase() === accountInput){
+      customer = customerData;
+    }
+  }
+
+  if(!accountInput){
+    msgBox.innerHTML = `<div class="error">Please enter Customer Account Number.</div>`;
+    return;
+  }
+  if(!customer){
+    msgBox.innerHTML = `<div class="error">Customer Account Number not found.</div>`;
+    return;
+  }
+  if(!customer.accountActive){
+    msgBox.innerHTML = `<div class="error">Customer account is pending final approval. Cannot transfer.</div>`;
+    return;
+  }
+  if(!amount || amount <= 0){
+    msgBox.innerHTML = `<div class="error">Please enter a valid transfer amount.</div>`;
+    return;
+  }
+  if(Number(employee.balance || 0) < amount){
+    msgBox.innerHTML = `<div class="error">Insufficient balance. Minimum ₹${amount} required.</div>`;
+    return;
+  }
+
+  // 10% cashback calculation
+  const cashback = amount * 0.10;
+  const netDebit = amount - cashback;
+
+  const empNewBal = Number(employee.balance) - netDebit;
+  const custNewBal = Number(customer.balance || 0) + amount;
+
+  const txId = generateTransactionId("TXC");
+  const cbId = generateTransactionId("CBK");
+  const dateStr = new Date().toISOString();
+
+  if(!Array.isArray(employee.transactions)) employee.transactions = [];
+  if(!Array.isArray(customer.transactions)) customer.transactions = [];
+
+  // Employee transfer record
+  employee.transactions.push({
+    id: txId,
+    type: "Transfer to Customer",
+    amount: amount,
+    account: customer.accountNumber,
+    balanceAfter: Number(employee.balance) - amount,
+    dateTime: dateStr
+  });
+
+  // Employee 10% cashback bonus record
+  employee.transactions.push({
+    id: cbId,
+    type: "🎁 10% Transfer Cashback",
+    amount: cashback,
+    account: "System Bonus",
+    balanceAfter: empNewBal,
+    dateTime: dateStr
+  });
+
+  // Customer credit record
+  customer.transactions.push({
+    id: txId,
+    type: "Credit from Employee",
+    amount: amount,
+    account: employee.accountNumber,
+    balanceAfter: custNewBal,
+    dateTime: dateStr
+  });
+
+  employee.balance = empNewBal;
+  customer.balance = custNewBal;
+
+  localStorage.setItem(EMPLOYEE_KEY, JSON.stringify(employee));
+  if(isArray){
+    localStorage.setItem(CUSTOMER_KEY, JSON.stringify(customerData));
+  } else {
+    localStorage.setItem(CUSTOMER_KEY, JSON.stringify(customer));
+  }
+
+  msgBox.innerHTML = `
+    <div class="success">
+      <h3>✅ Transfer & Cashback Successful!</h3>
+      <p><b>Transferred To:</b> ${escapeHTML(customer.fullName || "")}</p>
+      <p><b>Customer Account:</b> ${customer.accountNumber}</p>
+      <p><b>Transferred Amount:</b> ${formatMoney(amount)}</p>
+      <p><b>🎉 10% Cashback Credited:</b> +${formatMoney(cashback)}</p>
+      <p><b>Net Debited:</b> -${formatMoney(netDebit)}</p>
+      <p><b>Updated Employee Balance:</b> ${formatMoney(empNewBal)}</p>
+      <p><b>Transaction Ref:</b> ${txId}</p>
+    </div>
+  `;
+
+  document.getElementById("transferCustomerAccount").value = "";
+  document.getElementById("transferCustomerAmount").value = "";
+
+  showDashboard();
+}
+
+/* CUSTOMER APPROVAL SECTION */
+function showCustomer(){
+  const customer = JSON.parse(localStorage.getItem(CUSTOMER_KEY));
+  const section = document.getElementById("customerSection");
+
+  if(!customer){
+    section.innerHTML = `<div class="error">No registered customer record found.</div>`;
+    return;
+  }
+
+  section.innerHTML = `
+    <div class="customer-box">
+      <img class="customer-photo" src="${customer.photo || createDefaultPhoto()}">
+      <p><b>Customer Name:</b> ${escapeHTML(customer.fullName || "")}</p>
+      <p><b>Customer ID:</b> ${escapeHTML(customer.customerId || "")}</p>
+      <p><b>Account Number:</b> ${escapeHTML(customer.accountNumber || "")}</p>
+      <p><b>Mobile:</b> ${escapeHTML(customer.mobile || "")}</p>
+      <p><b>Email:</b> ${escapeHTML(customer.email || "")}</p>
+      <p><b>Manager Approval:</b> ${customer.managerApproval ? "✅ Approved" : "❌ Pending"}</p>
+      <p><b>Employee Approval:</b> ${customer.employeeApproval ? "✅ Approved" : "⏳ Pending"}</p>
+      <p><b>Status:</b> ${escapeHTML(customer.status || "")}</p>
+
+      ${
+        !customer.employeeApproval
+        ? `<button onclick="approveCustomer()" class="approve-btn">Approve Customer</button>`
+        : `<div class="success">✅ Customer is fully approved and active.</div>`
+      }
+    </div>
+  `;
+}
+
+function approveCustomer(){
+  const customer = JSON.parse(localStorage.getItem(CUSTOMER_KEY));
+  if(!customer){
+    alert("Customer not found.");
+    return;
+  }
+
+  if(!customer.managerApproval){
+    alert("Manager approval is required first.");
+    return;
+  }
+
+  if(customer.employeeApproval){
+    alert("Customer is already approved.");
+    return;
+  }
+
+  customer.employeeApproval = true;
+  customer.accountActive = true;
+  customer.status = "APPROVED";
+
+  localStorage.setItem(CUSTOMER_KEY, JSON.stringify(customer));
+  showCustomer();
+  alert("Customer approved successfully. Account is now active.");
+}
+
+function showTransactions(){
+  const employee = JSON.parse(localStorage.getItem(EMPLOYEE_KEY));
+  const list = document.getElementById("transactionList");
+
+  if(!employee || !Array.isArray(employee.transactions) || employee.transactions.length === 0){
+    list.innerHTML = `<p class="small">No transactions found.</p>`;
+    return;
+  }
+
+  list.innerHTML = employee.transactions.slice().reverse().map(tx => `
+    <div class="transaction" style="${tx.type.includes('Cashback') ? 'border-left-color:#10b981;background:rgba(16,185,129,0.1)' : ''}">
+      <p><b>${tx.type}</b></p>
+      <p><b>Amount:</b> ${formatMoney(tx.amount)}</p>
+      <p><b>Target/Source:</b> ${tx.account || "N/A"}</p>
+      <p><b>Balance After:</b> ${formatMoney(tx.balanceAfter)}</p>
+      <p class="small">Ref: ${tx.id} | ${new Date(tx.dateTime).toLocaleString("en-IN")}</p>
+    </div>
+  `).join("");
+}
+
+function logoutEmployee(){
+  sessionStorage.removeItem("sk_employee_logged_in");
+  document.getElementById("dashboardSection").classList.add("hidden");
+  showLogin();
+}
+
+function formatMoney(amount){
+  return "₹" + Number(amount || 0).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function escapeHTML(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function createDefaultPhoto(){
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+      <rect width="100%" height="100%" fill="#334155"/>
+      <circle cx="100" cy="75" r="35" fill="#94a3b8"/>
+      <circle cx="100" cy="190" r="75" fill="#94a3b8"/>
+    </svg>
+  `);
+}
+
+if(sessionStorage.getItem("sk_employee_logged_in") === "true"){
+  const emp = JSON.parse(localStorage.getItem(EMPLOYEE_KEY));
+  if(emp && emp.managerApproval){
+    showDashboard();
+  } else {
+    sessionStorage.removeItem("sk_employee_logged_in");
+  }
+}
+
+window.addEventListener("storage", function(event){
+  if(event.key === EMPLOYEE_KEY || event.key === CUSTOMER_KEY){
+    const emp = JSON.parse(localStorage.getItem(EMPLOYEE_KEY));
+    if(sessionStorage.getItem("sk_employee_logged_in") === "true"){
+      if(emp && emp.managerApproval){
+        showDashboard();
+      } else {
+        logoutEmployee();
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

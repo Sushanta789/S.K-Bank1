@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.K Zero Balance Bank - Customer Login</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+  margin:0;
+  padding:0;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
+  padding:20px 15px;
+  color:#1e293b;
+}
+
+.container{
+  max-width:650px;
+  margin:auto;
+}
+
+@keyframes slideDown{
+  from{
+    opacity:0;
+    transform:translateY(-30px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes slideUp{
+  from{
+    opacity:0;
+    transform:translateY(30px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes pulseGlow{
+  0%,100%{
+    transform:scale(1);
+    box-shadow:0 0 0 0 rgba(56,189,248,0.4);
+  }
+  50%{
+    transform:scale(1.04);
+    box-shadow:0 0 0 12px rgba(56,189,248,0);
+  }
+}
+
+.header{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(15px);
+  border:1px solid rgba(255,255,255,0.15);
+  color:white;
+  text-align:center;
+  padding:24px;
+  border-radius:20px;
+  margin-bottom:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.3);
+  animation:slideDown 0.6s ease;
+}
+
+.header h1{
+  color:#7dd3fc;
+  font-size:26px;
+  margin-bottom:6px;
+}
+
+.header p{
+  color:#cbd5e1;
+  font-size:14px;
+}
+
+.card{
+  background:#ffffff;
+  padding:26px;
+  border-radius:20px;
+  margin-bottom:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.25);
+  border:1px solid rgba(255,255,255,0.4);
+  animation:slideUp 0.6s ease;
+}
+
+h2{
+  text-align:center;
+  color:#0f172a;
+  margin-bottom:18px;
+  font-size:22px;
+}
+
+label{
+  display:block;
+  font-weight:bold;
+  font-size:14px;
+  color:#334155;
+  margin:14px 0 6px;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  border:1.5px solid #cbd5e1;
+  border-radius:12px;
+  font-size:15px;
+  background:#f8fafc;
+  outline:none;
+  transition:border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+}
+
+input:focus{
+  border-color:#0284c7;
+  background:#ffffff;
+  box-shadow:0 0 0 4px rgba(2,132,199,0.15);
+  transform:translateY(-1px);
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#0284c7,#2563eb);
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:16px;
+  transition:transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow:0 4px 14px rgba(37,99,235,0.3);
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px rgba(37,99,235,0.45);
+}
+
+.back{
+  background:#475569;
+  box-shadow:0 4px 12px rgba(71,85,105,0.25);
+  margin-top:15px;
+}
+
+.back:hover{
+  background:#334155;
+  box-shadow:0 8px 20px rgba(71,85,105,0.35);
+}
+
+.msg{
+  display:none;
+  padding:13px;
+  margin-top:15px;
+  border-radius:10px;
+  text-align:center;
+  font-weight:bold;
+  font-size:14px;
+  animation:slideDown 0.3s ease;
+  line-height:1.5;
+}
+
+.error{
+  background:#fee2e2;
+  color:#991b1b;
+  border:1px solid #fca5a5;
+}
+
+.profile{
+  text-align:center;
+  display:none;
+  animation:slideUp 0.6s ease;
+}
+
+.profile img{
+  width:125px;
+  height:125px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid #38bdf8;
+  margin:0 auto 10px;
+  animation:pulseGlow 2.5s infinite;
+}
+
+.balance{
+  background:linear-gradient(135deg,#eff6ff,#dbeafe);
+  padding:20px;
+  border-radius:14px;
+  margin:18px 0;
+  border:1px solid #bfdbfe;
+}
+
+.balance strong{
+  display:block;
+  font-size:32px;
+  color:#1d4ed8;
+  margin-top:5px;
+}
+
+.info{
+  text-align:left;
+  background:#f8fafc;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid #e2e8f0;
+}
+
+.info p{
+  padding:10px 8px;
+  border-bottom:1px solid #e2e8f0;
+  display:flex;
+  justify-content:space-between;
+  font-size:14.5px;
+}
+
+.info p:last-child{
+  border-bottom:none;
+}
+
+.register-link{
+  text-align:center;
+  margin-top:15px;
+}
+
+.register-link a{
+  color:#0284c7;
+  font-weight:bold;
+  text-decoration:none;
+}
+
+.register-link a:hover{
+  text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+  <h1>🏦 S.K Zero Balance Bank</h1>
+  <p>Customer Access Portal</p>
+</div>
+
+<!-- LOGIN FORM -->
+<div class="card" id="loginCard">
+  <h2>Customer Login</h2>
+
+  <label>Customer ID</label>
+  <input id="loginCustId" type="text" placeholder="e.g. SKC12345678">
+
+  <label>Customer Account Number</label>
+  <input id="loginAccount" type="text" placeholder="e.g. SKCA12345678">
+
+  <button onclick="login()">Login to Portal</button>
+
+  <div id="loginMsg" class="msg"></div>
+
+  <div class="register-link">
+    Need an account? <a href="customer.html">Register here</a>
+  </div>
+</div>
+
+<!-- PROFILE DETAILS -->
+<div class="card profile" id="profileCard">
+  <img id="customerPhoto" alt="Customer Profile Photo">
+  <h2 id="fullName"></h2>
+
+  <div class="balance">
+    <div>Available Balance</div>
+    <strong id="balance">₹0.00</strong>
+  </div>
+
+  <div class="info">
+    <p><b>Full Name:</b> <span id="pFullName"></span></p>
+    <p><b>Customer ID:</b> <span id="pCustomerId"></span></p>
+    <p><b>Account Number:</b> <span id="pAccountNumber"></span></p>
+    <p><b>Gender:</b> <span id="pGender"></span></p>
+    <p><b>Email ID:</b> <span id="pEmail"></span></p>
+    <p><b>Mobile Number:</b> <span id="pMobile"></span></p>
+  </div>
+
+  <button class="back" onclick="logout()">Logout</button>
+</div>
+
+</div>
+
+<script>
+const CUSTOMER_KEY = "sk_zero_balance_customer";
+
+function msg(id, text, type){
+  let e = document.getElementById(id);
+  e.textContent = text;
+  e.className = "msg " + type;
+  e.style.display = "block";
+}
+
+function money(n){
+  return "₹" + Number(n || 0).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+function login(){
+  let custId = document.getElementById("loginCustId").value.trim().toUpperCase();
+  let account = document.getElementById("loginAccount").value.trim().toUpperCase();
+
+  if(!custId || !account){
+    msg("loginMsg", "Please enter both Customer ID and Account Number.", "error");
+    return;
+  }
+
+  let saved = localStorage.getItem(CUSTOMER_KEY);
+  if(!saved){
+    msg("loginMsg", "Customer record not found. Please register first.", "error");
+    return;
+  }
+
+  let c = JSON.parse(saved);
+
+  // Validate credentials
+  if(
+    (c.customerId || "").toUpperCase() !== custId ||
+    (c.accountNumber || "").toUpperCase() !== account
+  ){
+    msg("loginMsg", "Invalid Customer ID or Account Number.", "error");
+    return;
+  }
+
+  // Check Manager Approval
+  if(!c.managerApproval){
+    msg("loginMsg", "❌ Account Not Approved: Waiting for Manager approval.", "error");
+    return;
+  }
+
+  // Check Employee Final Approval
+  if(!c.employeeApproval){
+    msg("loginMsg", "⏳ Account Pending: Manager approved. Waiting for Employee final approval.", "error");
+    return;
+  }
+
+  // Both approved -> Allow Login
+  showProfile(c);
+}
+
+function showProfile(c){
+  document.getElementById("loginCard").style.display = "none";
+  document.getElementById("profileCard").style.display = "block";
+
+  document.getElementById("customerPhoto").src = c.photo || "";
+  document.getElementById("fullName").textContent = c.fullName || "";
+  document.getElementById("balance").textContent = money(c.balance);
+
+  document.getElementById("pFullName").textContent = c.fullName || "";
+  document.getElementById("pCustomerId").textContent = c.customerId || "";
+  document.getElementById("pAccountNumber").textContent = c.accountNumber || "";
+  document.getElementById("pGender").textContent = c.gender || "";
+  document.getElementById("pEmail").textContent = c.email || "";
+  document.getElementById("pMobile").textContent = c.mobile || "";
+}
+
+function logout(){
+  document.getElementById("loginCustId").value = "";
+  document.getElementById("loginAccount").value = "";
+  document.getElementById("loginMsg").style.display = "none";
+
+  document.getElementById("profileCard").style.display = "none";
+  document.getElementById("loginCard").style.display = "block";
+}
+
+window.addEventListener("storage", function(e){
+  if(e.key !== CUSTOMER_KEY || !e.newValue) return;
+
+  try {
+    let c = JSON.parse(e.newValue);
+    if(document.getElementById("profileCard").style.display !== "none"){
+      // If either approval was revoked while logged in, log out
+      if(!c.managerApproval || !c.employeeApproval){
+        logout();
+        msg("loginMsg", "Approval status changed. Please login after full approval.", "error");
+      } else {
+        showProfile(c);
+      }
+    }
+  } catch(err){}
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Transaction History - S.K Zero Balance Bank</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #061a3a, #008b8b);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+h1 {
+    text-align: center;
+    color: #063b5c;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 12px;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: #006d77;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #00545c;
+}
+
+.message {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.account-box {
+    margin-top: 25px;
+    padding: 15px;
+    background: #eefafa;
+    border-radius: 10px;
+    border-left: 5px solid #008b8b;
+}
+
+.account-box p {
+    margin: 7px 0;
+}
+
+.transactions {
+    margin-top: 20px;
+}
+
+.history-title {
+    color: #063b5c;
+    margin-bottom: 15px;
+}
+
+.transaction {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    background: #fafafa;
+    border-left: 5px solid #16803c;
+}
+
+.transaction-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.type {
+    color: #16803c;
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.amount {
+    color: #16803c;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.transaction-id {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 10px;
+    word-break: break-all;
+}
+
+.date-box {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 8px;
+}
+
+.date-label {
+    display: block;
+    color: #777;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.date-value {
+    color: #333;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.balance {
+    margin-top: 10px;
+    color: #333;
+    font-size: 14px;
+}
+
+.balance strong {
+    color: #006d77;
+}
+
+.no-data {
+    text-align: center;
+    padding: 25px;
+    color: #777;
+    background: #f5f5f5;
+    border-radius: 10px;
+}
+
+@media (max-width: 500px) {
+
+    .container {
+        padding: 18px;
+    }
+
+    .transaction-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>S.K Zero Balance Bank</h1>
+
+    <p class="subtitle">
+        Transaction History
+    </p>
+
+
+    <label for="accountNumber">
+        Manager Account Number
+    </label>
+
+    <input
+        type="text"
+        id="accountNumber"
+        placeholder="Enter Manager Account Number"
+        autocomplete="off"
+    >
+
+    <button onclick="showTransactions()">
+        Search Transactions
+    </button>
+
+
+    <div id="message" class="message"></div>
+
+    <div id="accountInfo"></div>
+
+    <div
+        id="transactionList"
+        class="transactions">
+    </div>
+
+</div>
+
+
+<script>
+
+const STORAGE_KEY =
+    "sk_zero_balance_manager";
+
+
+/* =========================================
+   MONEY
+========================================= */
+
+function formatMoney(amount) {
+
+    return Number(amount || 0).toLocaleString(
+        "en-IN",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+/* =========================================
+   DATE & TIME
+========================================= */
+
+function formatDateTime(dateString) {
+
+    if (!dateString) {
+        return "Date & Time not available";
+    }
+
+    const date =
+        new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+        return "Invalid Date & Time";
+    }
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true
+        }
+    );
+
+}
+
+
+/* =========================================
+   SEARCH TRANSACTIONS
+========================================= */
+
+function showTransactions() {
+
+    const accountNumber =
+        document
+        .getElementById("accountNumber")
+        .value
+        .trim()
+        .toUpperCase();
+
+
+    const message =
+        document.getElementById("message");
+
+
+    const accountInfo =
+        document.getElementById("accountInfo");
+
+
+    const transactionList =
+        document.getElementById(
+            "transactionList"
+        );
+
+
+    message.textContent = "";
+
+    accountInfo.innerHTML = "";
+
+    transactionList.innerHTML = "";
+
+
+    /* ACCOUNT NUMBER */
+
+    if (!accountNumber) {
+
+        message.textContent =
+            "Please enter Manager Account Number.";
+
+        message.style.color =
+            "red";
+
+        return;
+    }
+
+
+    /* GET DATA */
+
+    const savedData =
+        localStorage.getItem(
+            STORAGE_KEY
+        );
+
+
+    if (!savedData) {
+
+        message.textContent =
+            "No manager account found.";
+
+        message.style.color =
+            "red";
+
+        return;
+    }
+
+
+    let manager;
+
+    try {
+
+        manager =
+            JSON.parse(savedData);
+
+    } catch (error) {
+
+        message.textContent =
+            "Invalid manager account data.";
+
+        message.style.color =
+            "red";
+
+        return;
+    }
+
+
+    /* CHECK ACCOUNT */
+
+    if (
+        !manager.accountNumber ||
+        manager.accountNumber.toUpperCase() !==
+        accountNumber
+    ) {
+
+        message.textContent =
+            "Manager Account Number not found.";
+
+        message.style.color =
+            "red";
+
+        return;
+    }
+
+
+    message.textContent =
+        "Transaction history found.";
+
+    message.style.color =
+        "green";
+
+
+    /* ACCOUNT INFORMATION */
+
+    accountInfo.innerHTML = `
+
+        <div class="account-box">
+
+            <p>
+                <strong>Manager Name:</strong>
+                ${escapeHTML(manager.fullName)}
+            </p>
+
+            <p>
+                <strong>Account Number:</strong>
+                ${escapeHTML(manager.accountNumber)}
+            </p>
+
+            <p>
+                <strong>Current Balance:</strong>
+                ₹${formatMoney(manager.balance)}
+            </p>
+
+        </div>
+
+    `;
+
+
+    /* TRANSACTIONS */
+
+    const transactions =
+        Array.isArray(manager.transactions)
+            ? [...manager.transactions]
+            : [];
+
+
+    if (transactions.length === 0) {
+
+        transactionList.innerHTML = `
+
+            <div class="no-data">
+                No transactions found for this account.
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    /* NEWEST FIRST */
+
+    transactions.sort(
+        function(a, b) {
+
+            return new Date(b.dateTime) -
+                   new Date(a.dateTime);
+
+        }
+    );
+
+
+    transactionList.innerHTML = `
+
+        <h3 class="history-title">
+            All Transactions (${transactions.length})
+        </h3>
+
+    `;
+
+
+    /* DISPLAY */
+
+    transactions.forEach(
+        function(transaction, index) {
+
+            const amount =
+                Number(transaction.amount) || 0;
+
+            const balanceAfter =
+                Number(transaction.balanceAfter) || 0;
+
+            const dateTime =
+                formatDateTime(
+                    transaction.dateTime
+                );
+
+            const transactionId =
+                transaction.id ||
+                "Not available";
+
+
+            transactionList.innerHTML += `
+
+                <div class="transaction">
+
+                    <div class="transaction-top">
+
+                        <span class="type">
+                            💰 ${escapeHTML(
+                                transaction.type ||
+                                "Deposit"
+                            )}
+                        </span>
+
+                        <span class="amount">
+                            + ₹${formatMoney(amount)}
+                        </span>
+
+                    </div>
+
+
+                    <div class="transaction-id">
+
+                        Transaction ID:
+                        ${escapeHTML(transactionId)}
+
+                    </div>
+
+
+                    <div class="date-box">
+
+                        <span class="date-label">
+                            Transaction Date & Time
+                        </span>
+
+                        <span class="date-value">
+                            🕒 ${dateTime}
+                        </span>
+
+                    </div>
+
+
+                    <div class="balance">
+
+                        Balance After Transaction:
+
+                        <strong>
+                            ₹${formatMoney(balanceAfter)}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+</script>
+
+</body>
+</html>

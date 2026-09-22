@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.K Zero Balance Bank - Manager Portal</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#020617,#0f172a,#1e293b);
+  color:white;
+  padding:20px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+}
+
+.card{
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(15px);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;
+  padding:25px;
+  margin-bottom:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,.3);
+  animation:slideUp .6s ease;
+}
+
+@keyframes slideUp{
+  from{ opacity:0; transform:translateY(30px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes pulse{
+  0%,100%{ transform:scale(1); }
+  50%{ transform:scale(1.04); }
+}
+
+.bank-title{
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+  margin-bottom:25px;
+  color:#e2e8f0;
+}
+
+h1{ text-align:center; color:#7dd3fc; margin-bottom:10px; }
+h2{ color:#7dd3fc; margin-bottom:18px; }
+
+.tabs{ display:flex; gap:10px; }
+.tabs button{ flex:1; }
+
+input{
+  width:100%;
+  padding:15px;
+  margin:8px 0;
+  border:none;
+  border-radius:12px;
+  background:#f8fafc;
+  color:#111827;
+  font-size:16px;
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:15px;
+  margin-top:10px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#0284c7,#2563eb);
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px rgba(37,99,235,.45);
+}
+
+.secondary{ background:#475569; }
+.logout{ background:#dc2626; }
+
+.btn-inline-approve{
+  width:auto;
+  margin-top:0;
+  padding:6px 14px;
+  font-size:13px;
+  border-radius:8px;
+  background:linear-gradient(135deg,#16a34a,#15803d);
+}
+
+.btn-inline-approve:hover{
+  box-shadow:0 4px 12px rgba(22,163,74,.45);
+}
+
+.badge{
+  display:inline-block;
+  background:#10b981;
+  color:white;
+  padding:3px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.status-badge{
+  display:inline-block;
+  padding:4px 12px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.status-approved{
+  background:rgba(34,197,94,.2);
+  color:#4ade80;
+  border:1px solid #22c55e;
+}
+
+.status-not-approved{
+  background:rgba(239,68,68,.2);
+  color:#f87171;
+  border:1px solid #ef4444;
+}
+
+.profile{ text-align:center; }
+.profile img{
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid #38bdf8;
+  margin:10px;
+  animation:pulse 2s infinite;
+}
+
+.balance{
+  font-size:36px;
+  color:#4ade80;
+  font-weight:bold;
+  margin:15px 0;
+}
+
+.info{
+  background:rgba(0,0,0,.2);
+  padding:16px;
+  border-radius:14px;
+  line-height:1.9;
+}
+
+.success{
+  margin-top:15px;
+  padding:16px;
+  background:rgba(34,197,94,.15);
+  border:1px solid #22c55e;
+  border-radius:12px;
+  color:#bbf7d0;
+  line-height:1.8;
+}
+
+.error{
+  margin-top:15px;
+  padding:16px;
+  background:rgba(239,68,68,.15);
+  border:1px solid #ef4444;
+  border-radius:12px;
+  color:#fecaca;
+  line-height:1.8;
+}
+
+.data-box{
+  background:rgba(255,255,255,.06);
+  padding:18px;
+  border-radius:15px;
+  margin-top:15px;
+  line-height:1.9;
+}
+
+.box-photo{
+  width:110px;
+  height:110px;
+  object-fit:cover;
+  border-radius:50%;
+  display:block;
+  margin:10px auto 20px;
+  border:3px solid #38bdf8;
+}
+
+.credential-field{
+  font-family:monospace;
+  background:rgba(0,0,0,.35);
+  padding:3px 8px;
+  border-radius:6px;
+  color:#fcd34d;
+  letter-spacing:0.5px;
+}
+
+.transaction{
+  background:rgba(255,255,255,.06);
+  padding:14px;
+  border-radius:10px;
+  margin-top:10px;
+  border-left:4px solid #38bdf8;
+  line-height:1.6;
+}
+
+.table-container{
+  overflow-x:auto;
+  margin-top:15px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  text-align:left;
+  font-size:14px;
+}
+
+th, td{
+  padding:12px 14px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+th{
+  color:#7dd3fc;
+  background:rgba(0,0,0,.25);
+  font-weight:bold;
+}
+
+tr:hover{
+  background:rgba(255,255,255,.04);
+}
+
+.hidden{ display:none; }
+.small{ font-size:14px; color:#94a3b8; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER & TABS -->
+<div id="authHeader" class="card">
+  <div class="bank-title">🏦 S.K Zero Balance Bank</div>
+  <div class="tabs">
+    <button onclick="showRegister()">Manager Registration</button>
+    <button onclick="showLogin()" class="secondary">Manager Login</button>
+  </div>
+</div>
+
+<!-- REGISTRATION -->
+<div id="registerSection" class="card">
+  <h2>👨‍💼 Manager Registration</h2>
+  <input type="text" id="regFullName" placeholder="Full Name">
+  <input type="date" id="regDob">
+  <input type="tel" id="regMobile" placeholder="Mobile Number">
+  <input type="email" id="regEmail" placeholder="Email ID">
+  <label style="display:block;margin-top:10px;color:#cbd5e1;">Profile Photo</label>
+  <input type="file" id="regPhoto" accept="image/*">
+  <input type="password" id="regPassword" placeholder="Password">
+  <button onclick="registerManager()">Create Manager Account</button>
+  <div id="registerMessage"></div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginSection" class="card hidden">
+  <h2>🔐 Manager Login</h2>
+  <input type="email" id="loginEmail" placeholder="Manager Email ID">
+  <input type="text" id="loginAccount" placeholder="Manager Account Number">
+  <input type="password" id="loginPassword" placeholder="Password">
+  <button onclick="loginManager()">Login</button>
+  <div id="loginMessage"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardSection" class="hidden">
+
+  <!-- PROFILE -->
+  <div class="card">
+    <div class="profile">
+      <img id="managerPhoto" src="" alt="Manager Photo">
+      <h1 id="managerName"></h1>
+      <div class="balance" id="managerBalance">₹0.00</div>
+    </div>
+
+    <div class="info">
+      <p><b>Bank:</b> S.K Zero Balance Bank</p>
+      <p><b>Manager Account:</b> <span id="managerAccount"></span></p>
+      <p><b>Mobile:</b> <span id="managerMobile"></span></p>
+      <p><b>Email:</b> <span id="managerEmail"></span></p>
+    </div>
+
+    <button onclick="logoutManager()" class="logout">Logout</button>
+  </div>
+
+  <!-- DIRECT ONE-CLICK ACCOUNT APPROVAL LIST -->
+  <div class="card">
+    <h2>⚡ Direct Account Approvals</h2>
+    <p class="small">Accounts appear directly with their account numbers. Click the "Approve" button next to any unapproved account for instant authorization.</p>
+
+    <div id="actionFeedbackMsg"></div>
+
+    <h3 style="margin-top:18px;color:#93c5fd;font-size:16px;">👨‍💼 Employee Account Numbers</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Account Number</th>
+            <th>Mobile</th>
+            <th>Approval Status</th>
+            <th>Direct Action</th>
+          </tr>
+        </thead>
+        <tbody id="employeeDirectTableBody"></tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:25px;color:#93c5fd;font-size:16px;">👤 Customer Account Numbers</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Account Number</th>
+            <th>Customer ID</th>
+            <th>Approval Status</th>
+            <th>Direct Action</th>
+          </tr>
+        </thead>
+        <tbody id="customerDirectTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TRANSFER TO EMPLOYEE WITH 10% CASHBACK -->
+  <div class="card">
+    <h2>💸 Transfer to Employee <span class="badge">🎁 10% Instant Cashback</span></h2>
+    <p class="small">Enter employee account number to disburse funds. Receive 10% instant cashback back to manager balance.</p>
+    <input type="text" id="transferEmpAccount" placeholder="Employee Bank Account Number (e.g. SKE...)">
+    <input type="number" id="transferEmpAmount" placeholder="Amount ₹" min="1" step="0.01">
+    <button onclick="transferToEmployee()">Transfer & Earn 10% Cashback</button>
+    <div id="empTransferMsg"></div>
+  </div>
+
+  <!-- CHECK EMPLOYEE DETAILS BY ID -->
+  <div class="card">
+    <h2>🔍 Check Employee Details</h2>
+    <p class="small">Enter Employee ID (or Account Number) to view records and approval status.</p>
+    <input type="text" id="searchEmpId" placeholder="Enter Employee ID / Account Number">
+    <button onclick="searchEmployeeDetails()">Show Employee Details</button>
+    <div id="employeeDetailsDisplay"></div>
+  </div>
+
+  <!-- CHECK CUSTOMER DETAILS BY ACCOUNT & ID -->
+  <div class="card">
+    <h2>🔍 Check Customer Details</h2>
+    <p class="small">Enter Customer Account Number and Customer ID to view customer profile and approval status.</p>
+    <input type="text" id="searchCustAccount" placeholder="Customer Account Number (e.g. SKCA...)">
+    <input type="text" id="searchCustId" placeholder="Customer ID (e.g. SKC...)">
+    <button onclick="searchCustomerDetails()">Show Customer Details</button>
+    <div id="customerDetailsDisplay"></div>
+  </div>
+
+  <!-- TRANSACTIONS LEDGER -->
+  <div class="card">
+    <h2>📋 Manager Transactions Ledger</h2>
+    <div id="managerTxList"></div>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+const MANAGER_KEY = "sk_zero_balance_manager";
+const EMPLOYEE_KEY = "sk_zero_balance_employee";
+const CUSTOMER_KEY = "sk_zero_balance_customer";
+
+function showRegister(){
+  document.getElementById("authHeader").classList.remove("hidden");
+  document.getElementById("registerSection").classList.remove("hidden");
+  document.getElementById("loginSection").classList.add("hidden");
+}
+
+function showLogin(){
+  document.getElementById("authHeader").classList.remove("hidden");
+  document.getElementById("registerSection").classList.add("hidden");
+  document.getElementById("loginSection").classList.remove("hidden");
+}
+
+function generateManagerAccount(){
+  return "SKM" + Math.floor(10000000 + Math.random() * 90000000);
+}
+
+function generateTransactionId(prefix="TRF"){
+  return prefix + Date.now() + Math.floor(Math.random() * 1000);
+}
+
+function registerManager(){
+  const fullName = document.getElementById("regFullName").value.trim();
+  const dob = document.getElementById("regDob").value;
+  const mobile = document.getElementById("regMobile").value.trim();
+  const email = document.getElementById("regEmail").value.trim().toLowerCase();
+  const password = document.getElementById("regPassword").value;
+  const photoFile = document.getElementById("regPhoto").files[0];
+  const message = document.getElementById("registerMessage");
+
+  if(!fullName || !dob || !mobile || !email || !password){
+    message.innerHTML = `<div class="error">Please fill all fields.</div>`;
+    return;
+  }
+
+  const accountNumber = generateManagerAccount();
+
+  if(photoFile){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      saveManager(fullName, dob, mobile, email, password, e.target.result, accountNumber);
+    };
+    reader.readAsDataURL(photoFile);
+  } else {
+    saveManager(fullName, dob, mobile, email, password, "", accountNumber);
+  }
+}
+
+function saveManager(fullName, dob, mobile, email, password, photo, accountNumber){
+  const manager = {
+    accountNumber: accountNumber,
+    fullName: fullName,
+    dob: dob,
+    mobile: mobile,
+    email: email,
+    password: password,
+    photo: photo,
+    balance: 0,
+    transactions: [],
+    createdAt: new Date().toISOString()
+  };
+
+  localStorage.setItem(MANAGER_KEY, JSON.stringify(manager));
+  document.getElementById("registerMessage").innerHTML = `<div class="success">Manager Account Created: <b>${accountNumber}</b></div>`;
+  setTimeout(showLogin, 1200);
+}
+
+function loginManager(){
+  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+  const account = document.getElementById("loginAccount").value.trim().toUpperCase();
+  const password = document.getElementById("loginPassword").value;
+  const message = document.getElementById("loginMessage");
+
+  const manager = JSON.parse(localStorage.getItem(MANAGER_KEY));
+  if(!manager || manager.email.toLowerCase() !== email || manager.accountNumber.toUpperCase() !== account || manager.password !== password){
+    message.innerHTML = `<div class="error">Invalid Credentials.</div>`;
+    return;
+  }
+
+  sessionStorage.setItem("sk_manager_logged_in", "true");
+  showDashboard();
+}
+
+function showDashboard(){
+  const manager = JSON.parse(localStorage.getItem(MANAGER_KEY));
+  if(!manager) return;
+
+  document.getElementById("authHeader").classList.add("hidden");
+  document.getElementById("registerSection").classList.add("hidden");
+  document.getElementById("loginSection").classList.add("hidden");
+  document.getElementById("dashboardSection").classList.remove("hidden");
+
+  document.getElementById("managerName").textContent = manager.fullName;
+  document.getElementById("managerAccount").textContent = manager.accountNumber;
+  document.getElementById("managerMobile").textContent = manager.mobile;
+  document.getElementById("managerEmail").textContent = manager.email;
+  document.getElementById("managerBalance").textContent = formatMoney(manager.balance);
+  document.getElementById("managerPhoto").src = manager.photo || createDefaultPhoto();
+
+  renderLedger();
+  loadDirectApprovalTables();
+}
+
+/* RENDER DIRECT ACCOUNT NUMBERS WITH INLINE APPROVE BUTTONS */
+function loadDirectApprovalTables(){
+  const empTBody = document.getElementById("employeeDirectTableBody");
+  const custTBody = document.getElementById("customerDirectTableBody");
+
+  empTBody.innerHTML = "";
+  custTBody.innerHTML = "";
+
+  // 1. Employees
+  const rawEmp = localStorage.getItem(EMPLOYEE_KEY);
+  if(!rawEmp){
+    empTBody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#94a3b8;">No registered employee accounts found.</td></tr>`;
+  } else {
+    const empData = JSON.parse(rawEmp);
+    const empList = Array.isArray(empData) ? empData : [empData];
+
+    empTBody.innerHTML = empList.map(e => {
+      const isApproved = e.managerApproval === true;
+      const statusBadge = isApproved 
+        ? `<span class="status-badge status-approved">✅ Approved</span>` 
+        : `<span class="status-badge status-not-approved">❌ Not Approved</span>`;
+
+      const actionBtn = isApproved
+        ? `<span style="color:#94a3b8;font-size:12px;">Completed</span>`
+        : `<button class="btn-inline-approve" onclick="directApproveEmployee('${escapeHTML(e.accountNumber)}')">Approve Account</button>`;
+
+      return `
+        <tr>
+          <td><b>${escapeHTML(e.fullName || "N/A")}</b></td>
+          <td><span class="credential-field">${escapeHTML(e.accountNumber || "N/A")}</span></td>
+          <td>${escapeHTML(e.mobile || "N/A")}</td>
+          <td>${statusBadge}</td>
+          <td>${actionBtn}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // 2. Customers
+  const rawCust = localStorage.getItem(CUSTOMER_KEY);
+  if(!rawCust){
+    custTBody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#94a3b8;">No registered customer accounts found.</td></tr>`;
+  } else {
+    const custData = JSON.parse(rawCust);
+    const custList = Array.isArray(custData) ? custData : [custData];
+
+    custTBody.innerHTML = custList.map(c => {
+      const isApproved = c.managerApproval === true;
+      const statusBadge = isApproved 
+        ? `<span class="status-badge status-approved">✅ Approved</span>` 
+        : `<span class="status-badge status-not-approved">❌ Not Approved</span>`;
+
+      const actionBtn = isApproved
+        ? `<span style="color:#94a3b8;font-size:12px;">Completed</span>`
+        : `<button class="btn-inline-approve" onclick="directApproveCustomer('${escapeHTML(c.accountNumber)}')">Approve Account</button>`;
+
+      return `
+        <tr>
+          <td><b>${escapeHTML(c.fullName || "N/A")}</b></td>
+          <td><span class="credential-field">${escapeHTML(c.accountNumber || "N/A")}</span></td>
+          <td><span class="credential-field">${escapeHTML(c.customerId || "N/A")}</span></td>
+          <td>${statusBadge}</td>
+          <td>${actionBtn}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+}
+
+/* DIRECT INLINE APPROVE FOR EMPLOYEE ACCOUNT */
+function directApproveEmployee(accountNumber){
+  const feedback = document.getElementById("actionFeedbackMsg");
+  feedback.innerHTML = "";
+
+  const rawEmp = localStorage.getItem(EMPLOYEE_KEY);
+  if(!rawEmp) return;
+
+  let empData = JSON.parse(rawEmp);
+  let isArray = Array.isArray(empData);
+  let target = null;
+
+  if(isArray){
+    target = empData.find(e => (e.accountNumber || "").toUpperCase() === accountNumber.toUpperCase());
+  } else {
+    if((empData.accountNumber || "").toUpperCase() === accountNumber.toUpperCase()){
+      target = empData;
+    }
+  }
+
+  if(!target) return;
+
+  target.managerApproval = true;
+  target.status = "MANAGER APPROVED";
+
+  if(isArray){
+    localStorage.setItem(EMPLOYEE_KEY, JSON.stringify(empData));
+  } else {
+    localStorage.setItem(EMPLOYEE_KEY, JSON.stringify(target));
+  }
+
+  feedback.innerHTML = `<div class="success">✅ Employee Account <b>${escapeHTML(accountNumber)}</b> (${escapeHTML(target.fullName || "")}) has been directly approved!</div>`;
+  loadDirectApprovalTables();
+}
+
+/* DIRECT INLINE APPROVE FOR CUSTOMER ACCOUNT */
+function directApproveCustomer(accountNumber){
+  const feedback = document.getElementById("actionFeedbackMsg");
+  feedback.innerHTML = "";
+
+  const rawCust = localStorage.getItem(CUSTOMER_KEY);
+  if(!rawCust) return;
+
+  let custData = JSON.parse(rawCust);
+  let isArray = Array.isArray(custData);
+  let target = null;
+
+  if(isArray){
+    target = custData.find(c => (c.accountNumber || "").toUpperCase() === accountNumber.toUpperCase());
+  } else {
+    if((custData.accountNumber || "").toUpperCase() === accountNumber.toUpperCase()){
+      target = custData;
+    }
+  }
+
+  if(!target) return;
+
+  target.managerApproval = true;
+  target.status = "MANAGER APPROVED";
+
+  if(isArray){
+    localStorage.setItem(CUSTOMER_KEY, JSON.stringify(custData));
+  } else {
+    localStorage.setItem(CUSTOMER_KEY, JSON.stringify(target));
+  }
+
+  feedback.innerHTML = `<div class="success">✅ Customer Account <b>${escapeHTML(accountNumber)}</b> (${escapeHTML(target.fullName || "")}) has been approved at Manager level!</div>`;
+  loadDirectApprovalTables();
+}
+
+/* TRANSFER TO EMPLOYEE WITH 10% CASHBACK */
+function transferToEmployee(){
+  const empAcc = document.getElementById("transferEmpAccount").value.trim().toUpperCase();
+  const amount = Number(document.getElementById("transferEmpAmount").value);
+  const msg = document.getElementById("empTransferMsg");
+  msg.innerHTML = "";
+
+  const manager = JSON.parse(localStorage.getItem(MANAGER_KEY));
+  const rawEmp = localStorage.getItem(EMPLOYEE_KEY);
+
+  if(!manager){
+    msg.innerHTML = `<div class="error">Manager session not found.</div>`;
+    return;
+  }
+  if(!rawEmp){
+    msg.innerHTML = `<div class="error">No registered employee database found.</div>`;
+    return;
+  }
+
+  let empData = JSON.parse(rawEmp);
+  let employee = null;
+  let isArray = Array.isArray(empData);
+
+  if(isArray){
+    employee = empData.find(e => (e.accountNumber || "").toUpperCase() === empAcc);
+  } else {
+    if((empData.accountNumber || "").toUpperCase() === empAcc){
+      employee = empData;
+    }
+  }
+
+  if(!empAcc){
+    msg.innerHTML = `<div class="error">Please enter Employee Bank Account Number.</div>`;
+    return;
+  }
+  if(!employee){
+    msg.innerHTML = `<div class="error">Employee Account Number does not match records.</div>`;
+    return;
+  }
+  if(!employee.managerApproval){
+    msg.innerHTML = `<div class="error">Employee account is NOT APPROVED by Manager. Cannot transfer.</div>`;
+    return;
+  }
+  if(!amount || amount <= 0){
+    msg.innerHTML = `<div class="error">Please enter a valid transfer amount.</div>`;
+    return;
+  }
+  if(Number(manager.balance || 0) < amount){
+    msg.innerHTML = `<div class="error">Insufficient balance. Minimum ₹${amount} required.</div>`;
+    return;
+  }
+
+  const cashback = amount * 0.10;
+  const netDebit = amount - cashback;
+
+  const mgrNewBal = Number(manager.balance) - netDebit;
+  const empNewBal = Number(employee.balance || 0) + amount;
+
+  const txId = generateTransactionId("TXE");
+  const cbId = generateTransactionId("CBK");
+  const dateStr = new Date().toISOString();
+
+  if(!Array.isArray(manager.transactions)) manager.transactions = [];
+  if(!Array.isArray(employee.transactions)) employee.transactions = [];
+
+  manager.transactions.push({
+    id: txId,
+    type: "Transfer to Employee",
+    amount: amount,
+    account: employee.accountNumber,
+    balanceAfter: Number(manager.balance) - amount,
+    dateTime: dateStr
+  });
+
+  manager.transactions.push({
+    id: cbId,
+    type: "🎁 10% Transfer Cashback",
+    amount: cashback,
+    account: "System Bonus",
+    balanceAfter: mgrNewBal,
+    dateTime: dateStr
+  });
+
+  employee.transactions.push({
+    id: txId,
+    type: "Credit from Manager",
+    amount: amount,
+    account: manager.accountNumber,
+    balanceAfter: empNewBal,
+    dateTime: dateStr
+  });
+
+  manager.balance = mgrNewBal;
+  employee.balance = empNewBal;
+
+  localStorage.setItem(MANAGER_KEY, JSON.stringify(manager));
+  if(isArray){
+    localStorage.setItem(EMPLOYEE_KEY, JSON.stringify(empData));
+  } else {
+    localStorage.setItem(EMPLOYEE_KEY, JSON.stringify(employee));
+  }
+
+  msg.innerHTML = `
+    <div class="success">
+      <h3>✅ Transfer & Cashback Successful!</h3>
+      <p><b>Transferred To:</b> ${escapeHTML(employee.fullName || "")}</p>
+      <p><b>Employee Account:</b> ${employee.accountNumber}</p>
+      <p><b>Disbursed Amount:</b> ${formatMoney(amount)}</p>
+      <p><b>🎉 10% Cashback Credited:</b> +${formatMoney(cashback)}</p>
+      <p><b>Net Debited:</b> -${formatMoney(netDebit)}</p>
+      <p><b>Updated Manager Balance:</b> ${formatMoney(mgrNewBal)}</p>
+      <p><b>Reference ID:</b> ${txId}</p>
+    </div>
+  `;
+
+  document.getElementById("transferEmpAccount").value = "";
+  document.getElementById("transferEmpAmount").value = "";
+  showDashboard();
+}
+
+/* SEARCH EMPLOYEE DETAILS BY ID / ACCOUNT */
+function searchEmployeeDetails(){
+  const searchInput = document.getElementById("searchEmpId").value.trim().toUpperCase();
+  const display = document.getElementById("employeeDetailsDisplay");
+  display.innerHTML = "";
+
+  if(!searchInput){
+    display.innerHTML = `<div class="error">Please enter Employee ID or Account Number.</div>`;
+    return;
+  }
+
+  const rawEmp = localStorage.getItem(EMPLOYEE_KEY);
+  if(!rawEmp){
+    display.innerHTML = `<div class="error">No registered employee database found.</div>`;
+    return;
+  }
+
+  const empData = JSON.parse(rawEmp);
+  let matched = null;
+
+  if(Array.isArray(empData)){
+    matched = empData.find(e => 
+      (e.accountNumber && e.accountNumber.toUpperCase() === searchInput) || 
+      (e.employeeId && e.employeeId.toUpperCase() === searchInput)
+    );
+  } else {
+    if(
+      (empData.accountNumber && empData.accountNumber.toUpperCase() === searchInput) || 
+      (empData.employeeId && empData.employeeId.toUpperCase() === searchInput)
+    ){
+      matched = empData;
+    }
+  }
+
+  if(!matched){
+    display.innerHTML = `<div class="error">No employee found matching: ${escapeHTML(searchInput)}</div>`;
+    return;
+  }
+
+  const isApproved = matched.managerApproval === true;
+  const pin = matched.pin || matched.mpin || matched.pinCode || matched.transactionPin || "Not Configured";
+
+  display.innerHTML = `
+    <div class="data-box">
+      <img class="box-photo" src="${matched.photo || createDefaultPhoto()}" alt="Employee Photo">
+      <p><b>Full Name:</b> ${escapeHTML(matched.fullName || "N/A")}</p>
+      <p><b>Employee Account:</b> <span class="credential-field">${escapeHTML(matched.accountNumber || "N/A")}</span></p>
+      <p><b>Current Balance:</b> <span style="color:#4ade80;font-weight:bold;">${formatMoney(matched.balance || 0)}</span></p>
+      <p><b>Mobile:</b> ${escapeHTML(matched.mobile || "N/A")}</p>
+      <p><b>Email:</b> ${escapeHTML(matched.email || "N/A")}</p>
+      <p><b>Password:</b> <span class="credential-field">${escapeHTML(matched.password || "N/A")}</span></p>
+      <p><b>PIN:</b> <span class="credential-field">${escapeHTML(pin)}</span></p>
+      <p><b>Manager Approval:</b> ${isApproved ? '<span class="status-badge status-approved">✅ Approved</span>' : '<span class="status-badge status-not-approved">❌ Not Approved</span>'}</p>
+    </div>
+  `;
+}
+
+/* SEARCH CUSTOMER DETAILS BY ACCOUNT & ID */
+function searchCustomerDetails(){
+  const searchAcc = document.getElementById("searchCustAccount").value.trim().toUpperCase();
+  const searchId = document.getElementById("searchCustId").value.trim().toUpperCase();
+  const display = document.getElementById("customerDetailsDisplay");
+  display.innerHTML = "";
+
+  if(!searchAcc || !searchId){
+    display.innerHTML = `<div class="error">Please enter both Customer Account Number and Customer ID.</div>`;
+    return;
+  }
+
+  const rawCust = localStorage.getItem(CUSTOMER_KEY);
+  if(!rawCust){
+    display.innerHTML = `<div class="error">No customer records found in system.</div>`;
+    return;
+  }
+
+  const custData = JSON.parse(rawCust);
+  let matched = null;
+
+  if(Array.isArray(custData)){
+    matched = custData.find(c => 
+      (c.accountNumber || "").toUpperCase() === searchAcc && 
+      (c.customerId || "").toUpperCase() === searchId
+    );
+  } else {
+    if(
+      (custData.accountNumber || "").toUpperCase() === searchAcc && 
+      (custData.customerId || "").toUpperCase() === searchId
+    ){
+      matched = custData;
+    }
+  }
+
+  if(!matched){
+    display.innerHTML = `<div class="error">No matching customer found with specified Account Number and Customer ID.</div>`;
+    return;
+  }
+
+  const isMgrApproved = matched.managerApproval === true;
+  const isEmpApproved = matched.employeeApproval === true;
+
+  display.innerHTML = `
+    <div class="data-box">
+      <img class="box-photo" src="${matched.photo || createDefaultPhoto()}" alt="Customer Photo">
+      <p><b>Full Name:</b> ${escapeHTML(matched.fullName || "N/A")}</p>
+      <p><b>Customer ID:</b> <span class="credential-field">${escapeHTML(matched.customerId || "N/A")}</span></p>
+      <p><b>Account Number:</b> <span class="credential-field">${escapeHTML(matched.accountNumber || "N/A")}</span></p>
+      <p><b>Current Balance:</b> <span style="color:#4ade80;font-weight:bold;">${formatMoney(matched.balance || 0)}</span></p>
+      <p><b>Mobile:</b> ${escapeHTML(matched.mobile || "N/A")}</p>
+      <p><b>Email:</b> ${escapeHTML(matched.email || "N/A")}</p>
+      <p><b>Gender:</b> ${escapeHTML(matched.gender || "N/A")}</p>
+      <p><b>Date of Birth:</b> ${escapeHTML(matched.dob || "N/A")}</p>
+      <p><b>Manager Approval:</b> ${isMgrApproved ? '<span class="status-badge status-approved">✅ Approved</span>' : '<span class="status-badge status-not-approved">❌ Not Approved</span>'}</p>
+      <p><b>Employee Approval:</b> ${isEmpApproved ? '<span class="status-badge status-approved">✅ Approved</span>' : '<span class="status-badge status-not-approved">❌ Not Approved</span>'}</p>
+      <p><b>Final Status:</b> ${matched.accountActive ? '<span class="status-badge status-approved">ACTIVE</span>' : '<span class="status-badge status-not-approved">NOT ACTIVE</span>'}</p>
+    </div>
+  `;
+}
+
+function renderLedger(){
+  const manager = JSON.parse(localStorage.getItem(MANAGER_KEY));
+  const container = document.getElementById("managerTxList");
+  if(!manager || !manager.transactions || manager.transactions.length === 0){
+    container.innerHTML = `<p class="small">No records found.</p>`;
+    return;
+  }
+
+  container.innerHTML = manager.transactions.slice().reverse().map(tx => `
+    <div class="transaction" style="${tx.type.includes('Cashback') ? 'border-left-color:#10b981;background:rgba(16,185,129,0.1)' : ''}">
+      <p><b>${tx.type}</b>: ${formatMoney(tx.amount)}</p>
+      <p class="small">Account/Target: ${tx.account || "N/A"} | Balance After: ${formatMoney(tx.balanceAfter)} | Ref: ${tx.id}</p>
+    </div>
+  `).join("");
+}
+
+function logoutManager(){
+  sessionStorage.removeItem("sk_manager_logged_in");
+  document.getElementById("dashboardSection").classList.add("hidden");
+  showLogin();
+}
+
+function formatMoney(amount){
+  return "₹" + Number(amount || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function escapeHTML(value){
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function createDefaultPhoto(){
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+      <rect width="100%" height="100%" fill="#334155"/>
+      <circle cx="100" cy="75" r="35" fill="#94a3b8"/>
+      <circle cx="100" cy="190" r="75" fill="#94a3b8"/>
+    </svg>
+  `);
+}
+
+if(sessionStorage.getItem("sk_manager_logged_in") === "true"){
+  if(localStorage.getItem(MANAGER_KEY)) showDashboard();
+}
+
+window.addEventListener("storage", function(e){
+  if((e.key === MANAGER_KEY || e.key === EMPLOYEE_KEY || e.key === CUSTOMER_KEY) && sessionStorage.getItem("sk_manager_logged_in") === "true"){
+    showDashboard();
+  }
+});
+</script>
+
+</body>
+</html>

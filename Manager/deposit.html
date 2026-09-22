@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deposit - S.K Zero Balance Bank</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #061b3a, #087f8c);
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+    margin: 40px auto;
+}
+
+.header {
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 27px;
+    margin-bottom: 7px;
+}
+
+.header p {
+    font-size: 14px;
+}
+
+.card {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.card h2 {
+    text-align: center;
+    color: #073b66;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 9px;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #087f8c;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    background: #087f8c;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #05616a;
+}
+
+.message {
+    display: none;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.error {
+    background: #ffe0e0;
+    color: #a11a1a;
+}
+
+.success {
+    background: #d8f5df;
+    color: #146c2e;
+}
+
+.result {
+    display: none;
+    margin-top: 20px;
+    background: #f5f8fa;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.result h3 {
+    text-align: center;
+    color: #087f8c;
+    margin-bottom: 15px;
+}
+
+.result-row {
+    padding: 13px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.result-row:last-child {
+    border-bottom: none;
+}
+
+.result-label {
+    display: block;
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.result-value {
+    display: block;
+    color: #073b66;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.account {
+    letter-spacing: 2px;
+}
+
+.balance {
+    font-size: 28px;
+    color: #087f8c;
+}
+
+.datetime {
+    font-size: 15px;
+}
+
+.transaction-id {
+    font-size: 13px;
+    word-break: break-all;
+    color: #555;
+}
+
+.footer {
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🏦 S.K Zero Balance Bank</h1>
+        <p>Manager Deposit System</p>
+    </div>
+
+    <div class="card">
+
+        <h2>Deposit Money</h2>
+
+        <div id="message" class="message"></div>
+
+        <form id="depositForm">
+
+            <div class="form-group">
+
+                <label for="accountNumber">
+                    Manager Account Number
+                </label>
+
+                <input
+                    type="text"
+                    id="accountNumber"
+                    placeholder="Enter Manager Account Number"
+                    autocomplete="off"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="depositAmount">
+                    Deposit Amount
+                </label>
+
+                <input
+                    type="number"
+                    id="depositAmount"
+                    placeholder="Enter amount"
+                    min="1"
+                    step="0.01"
+                    required>
+
+            </div>
+
+            <button type="submit">
+                Submit Deposit
+            </button>
+
+        </form>
+
+        <div class="result" id="result">
+
+            <h3>Deposit Successful</h3>
+
+            <div class="result-row">
+
+                <span class="result-label">
+                    Manager Account Number
+                </span>
+
+                <span
+                    class="result-value account"
+                    id="resultAccount">
+                </span>
+
+            </div>
+
+            <div class="result-row">
+
+                <span class="result-label">
+                    Transaction ID
+                </span>
+
+                <span
+                    class="result-value transaction-id"
+                    id="resultTransactionId">
+                </span>
+
+            </div>
+
+            <div class="result-row">
+
+                <span class="result-label">
+                    Deposited Amount
+                </span>
+
+                <span
+                    class="result-value"
+                    id="resultDeposit">
+                </span>
+
+            </div>
+
+            <div class="result-row">
+
+                <span class="result-label">
+                    Current Balance
+                </span>
+
+                <span
+                    class="result-value balance"
+                    id="resultBalance">
+                </span>
+
+            </div>
+
+            <div class="result-row">
+
+                <span class="result-label">
+                    Transaction Date & Time
+                </span>
+
+                <span
+                    class="result-value datetime"
+                    id="resultDateTime">
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        S.K Zero Balance Bank
+    </div>
+
+</div>
+
+
+<script>
+
+const STORAGE_KEY =
+    "sk_zero_balance_manager";
+
+
+/* =========================================
+   MONEY FORMAT
+========================================= */
+
+function formatMoney(amount) {
+
+    return "₹" +
+        Number(amount).toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+}
+
+
+/* =========================================
+   DATE & TIME
+========================================= */
+
+function formatDateTime(dateString) {
+
+    const date =
+        new Date(dateString);
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true
+        }
+    );
+
+}
+
+
+/* =========================================
+   DEPOSIT
+========================================= */
+
+document
+.getElementById("depositForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const accountNumber =
+        document
+        .getElementById("accountNumber")
+        .value
+        .trim()
+        .toUpperCase();
+
+    const amount =
+        parseFloat(
+            document
+            .getElementById("depositAmount")
+            .value
+        );
+
+    const message =
+        document.getElementById("message");
+
+    const result =
+        document.getElementById("result");
+
+
+    message.style.display = "none";
+    result.style.display = "none";
+
+
+    /* ACCOUNT CHECK */
+
+    if (!accountNumber) {
+
+        showMessage(
+            "Please enter Manager Account Number.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /* AMOUNT CHECK */
+
+    if (
+        isNaN(amount) ||
+        amount <= 0
+    ) {
+
+        showMessage(
+            "Please enter a valid deposit amount.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /* GET MANAGER */
+
+    const stored =
+        localStorage.getItem(
+            STORAGE_KEY
+        );
+
+    if (!stored) {
+
+        showMessage(
+            "No manager account found.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    let manager;
+
+    try {
+
+        manager =
+            JSON.parse(stored);
+
+    } catch (error) {
+
+        showMessage(
+            "Manager account data is invalid.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /* ACCOUNT NUMBER CHECK */
+
+    if (
+        !manager.accountNumber ||
+        manager.accountNumber.toUpperCase() !==
+        accountNumber
+    ) {
+
+        showMessage(
+            "Manager Account Number not found.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /* =========================================
+       CURRENT BALANCE
+    ========================================= */
+
+    let currentBalance =
+        Number(manager.balance) || 0;
+
+
+    /* =========================================
+       ADD DEPOSIT
+    ========================================= */
+
+    currentBalance += amount;
+
+
+    manager.balance =
+        currentBalance;
+
+
+    /* =========================================
+       CREATE TRANSACTION ARRAY
+    ========================================= */
+
+    if (
+        !Array.isArray(
+            manager.transactions
+        )
+    ) {
+
+        manager.transactions = [];
+
+    }
+
+
+    /* =========================================
+       CREATE DATE & TIME
+    ========================================= */
+
+    const transactionDateTime =
+        new Date().toISOString();
+
+
+    /* =========================================
+       CREATE TRANSACTION ID
+    ========================================= */
+
+    const transactionId =
+        "TXN" +
+        Date.now() +
+        Math.floor(
+            Math.random() * 1000
+        );
+
+
+    /* =========================================
+       SAVE TRANSACTION
+    ========================================= */
+
+    manager.transactions.push({
+
+        id: transactionId,
+
+        type: "Deposit",
+
+        amount: amount,
+
+        balanceAfter: currentBalance,
+
+        dateTime: transactionDateTime
+
+    });
+
+
+    /* =========================================
+       SAVE MANAGER DATA
+    ========================================= */
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(manager)
+    );
+
+
+    /* =========================================
+       SHOW RESULT
+    ========================================= */
+
+    document
+    .getElementById("resultAccount")
+    .textContent =
+        manager.accountNumber;
+
+
+    document
+    .getElementById("resultTransactionId")
+    .textContent =
+        transactionId;
+
+
+    document
+    .getElementById("resultDeposit")
+    .textContent =
+        formatMoney(amount);
+
+
+    document
+    .getElementById("resultBalance")
+    .textContent =
+        formatMoney(currentBalance);
+
+
+    document
+    .getElementById("resultDateTime")
+    .textContent =
+        formatDateTime(
+            transactionDateTime
+        );
+
+
+    result.style.display =
+        "block";
+
+
+    showMessage(
+        "Deposit successful. Transaction history updated.",
+        "success"
+    );
+
+
+    /* CLEAR AMOUNT */
+
+    document
+    .getElementById("depositAmount")
+    .value = "";
+
+});
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+function showMessage(text, type) {
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+    message.textContent =
+        text;
+
+    message.className =
+        "message " + type;
+
+    message.style.display =
+        "block";
+}
+
+</script>
+
+</body>
+</html>

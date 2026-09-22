@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Employee Search - S.K Zero Balance Bank</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#061b3a,#087f8c);
+    padding:20px;
+    color:#222;
+}
+
+.container{
+    max-width:480px;
+    margin:auto;
+}
+
+.header{
+    text-align:center;
+    color:white;
+    margin-bottom:20px;
+}
+
+.header h1{
+    font-size:28px;
+    margin-bottom:6px;
+}
+
+.header p{
+    font-size:14px;
+    opacity:.9;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,.25);
+}
+
+.card h2{
+    text-align:center;
+    color:#073b66;
+    margin-bottom:20px;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-bottom:7px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:13px;
+    border:1px solid #ccc;
+    border-radius:9px;
+    outline:none;
+    font-size:16px;
+}
+
+input:focus{
+    border-color:#087f8c;
+    box-shadow:0 0 0 2px rgba(8,127,140,.12);
+}
+
+button{
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:9px;
+    background:#087f8c;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:5px;
+}
+
+button:hover{
+    background:#05616a;
+}
+
+.message{
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:15px;
+    display:none;
+    text-align:center;
+    font-weight:bold;
+}
+
+.success{
+    background:#d8f5df;
+    color:#146c2e;
+}
+
+.error{
+    background:#ffe0e0;
+    color:#a11a1a;
+}
+
+.result{
+    display:none;
+    margin-top:20px;
+}
+
+.result-box{
+    background:#f5f8fa;
+    border-radius:12px;
+    padding:15px;
+}
+
+.result-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:12px 0;
+    border-bottom:1px solid #ddd;
+}
+
+.result-row:last-child{
+    border-bottom:none;
+}
+
+.result-label{
+    color:#666;
+}
+
+.result-value{
+    font-weight:bold;
+    text-align:right;
+    word-break:break-word;
+}
+
+.pin{
+    background:#fff8e1;
+    border:2px dashed #f9a825;
+    border-radius:10px;
+    padding:15px;
+    text-align:center;
+    margin-top:15px;
+}
+
+.pin small{
+    display:block;
+    color:#666;
+    margin-bottom:5px;
+}
+
+.pin strong{
+    font-size:30px;
+    letter-spacing:6px;
+    color:#e65100;
+}
+
+.account{
+    background:#eef7ff;
+    border:2px dashed #087f8c;
+    border-radius:10px;
+    padding:15px;
+    text-align:center;
+    margin-top:15px;
+}
+
+.account small{
+    display:block;
+    color:#666;
+    margin-bottom:5px;
+}
+
+.account strong{
+    font-size:21px;
+    color:#073b66;
+    letter-spacing:2px;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.footer{
+    text-align:center;
+    color:white;
+    font-size:12px;
+    margin-top:15px;
+}
+
+@media(max-width:500px){
+
+    body{
+        padding:12px;
+    }
+
+    .card{
+        padding:20px;
+    }
+
+    .header h1{
+        font-size:24px;
+    }
+
+    .result-row{
+        flex-direction:column;
+        gap:4px;
+    }
+
+    .result-value{
+        text-align:left;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>🏦 S.K Zero Balance Bank</h1>
+
+        <p>Employee Account Search</p>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="card">
+
+        <h2>Search Employee</h2>
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+        <form id="searchForm">
+
+            <div class="form-group">
+
+                <label>
+                    Employee Mobile Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="mobile"
+                    placeholder="Enter 10 digit mobile number"
+                    maxlength="10"
+                    inputmode="numeric"
+                    required>
+
+            </div>
+
+            <button type="submit">
+                Submit
+            </button>
+
+        </form>
+
+
+        <!-- RESULT -->
+
+        <div
+            id="result"
+            class="result">
+
+            <div class="result-box">
+
+                <div class="result-row">
+
+                    <span class="result-label">
+                        Full Name
+                    </span>
+
+                    <span
+                        class="result-value"
+                        id="fullName">
+                    </span>
+
+                </div>
+
+
+                <div class="result-row">
+
+                    <span class="result-label">
+                        Mobile Number
+                    </span>
+
+                    <span
+                        class="result-value"
+                        id="resultMobile">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCOUNT NUMBER -->
+
+            <div class="account">
+
+                <small>
+                    Employee Account Number
+                </small>
+
+                <strong
+                    id="accountNumber">
+                </strong>
+
+            </div>
+
+
+            <!-- PIN -->
+
+            <div class="pin">
+
+                <small>
+                    4-Digit Employee PIN
+                </small>
+
+                <strong
+                    id="employeePin">
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        Demo banking application •
+        Employee data is stored locally.
+
+    </div>
+
+</div>
+
+
+<script>
+
+const EMPLOYEE_KEY =
+    "sk_zero_balance_employee";
+
+
+function showMessage(
+    message,
+    type
+){
+
+    const element =
+        document.getElementById(
+            "message"
+        );
+
+    element.textContent =
+        message;
+
+    element.className =
+        "message " + type;
+
+    element.style.display =
+        "block";
+
+}
+
+
+document
+    .getElementById("searchForm")
+    .addEventListener(
+        "submit",
+        function(event){
+
+            event.preventDefault();
+
+
+            const mobile =
+                document
+                    .getElementById("mobile")
+                    .value
+                    .trim();
+
+
+            /* MOBILE VALIDATION */
+
+            if(
+                !/^[0-9]{10}$/.test(mobile)
+            ){
+
+                showMessage(
+                    "Please enter a valid 10-digit mobile number.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            /* GET EMPLOYEE */
+
+            const stored =
+                localStorage.getItem(
+                    EMPLOYEE_KEY
+                );
+
+
+            if(!stored){
+
+                showMessage(
+                    "No employee account found.",
+                    "error"
+                );
+
+                document
+                    .getElementById("result")
+                    .style.display =
+                    "none";
+
+                return;
+
+            }
+
+
+            let employee;
+
+
+            try{
+
+                employee =
+                    JSON.parse(stored);
+
+            }catch(error){
+
+                showMessage(
+                    "Employee account data is invalid.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            /* SEARCH MOBILE */
+
+            if(
+                employee.mobile !== mobile
+            ){
+
+                showMessage(
+                    "No employee found with this mobile number.",
+                    "error"
+                );
+
+                document
+                    .getElementById("result")
+                    .style.display =
+                    "none";
+
+                return;
+
+            }
+
+
+            /* SHOW SUCCESS */
+
+            showMessage(
+                "Employee account found successfully.",
+                "success"
+            );
+
+
+            /* FULL NAME */
+
+            document
+                .getElementById("fullName")
+                .textContent =
+                employee.fullName;
+
+
+            /* MOBILE */
+
+            document
+                .getElementById("resultMobile")
+                .textContent =
+                employee.mobile;
+
+
+            /* ACCOUNT NUMBER */
+
+            document
+                .getElementById("accountNumber")
+                .textContent =
+                employee.accountNumber;
+
+
+            /* PIN */
+
+            document
+                .getElementById("employeePin")
+                .textContent =
+                employee.pin;
+
+
+            /* SHOW RESULT */
+
+            document
+                .getElementById("result")
+                .style.display =
+                "block";
+
+        }
+    );
+
+</script>
+
+</body>
+</html>

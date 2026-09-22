@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Search Manager - S.K Zero Balance Bank</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #061b3a, #087f8c);
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+    margin: 40px auto;
+}
+
+.header {
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 27px;
+    margin-bottom: 7px;
+}
+
+.header p {
+    font-size: 14px;
+}
+
+.card {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
+
+.card h2 {
+    text-align: center;
+    color: #073b66;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 9px;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #087f8c;
+    box-shadow: 0 0 0 2px rgba(8,127,140,0.12);
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    background: #087f8c;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #05616a;
+}
+
+.message {
+    display: none;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.error {
+    background: #ffe0e0;
+    color: #a11a1a;
+}
+
+.success {
+    background: #d8f5df;
+    color: #146c2e;
+}
+
+.result {
+    display: none;
+    margin-top: 20px;
+    background: #f5f8fa;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.result h3 {
+    text-align: center;
+    color: #087f8c;
+    margin-bottom: 15px;
+}
+
+.result-row {
+    padding: 13px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.result-row:last-child {
+    border-bottom: none;
+}
+
+.result-label {
+    display: block;
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.result-value {
+    display: block;
+    color: #073b66;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.account {
+    letter-spacing: 2px;
+}
+
+.footer {
+    text-align: center;
+    color: white;
+    font-size: 12px;
+    margin-top: 20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>🏦 S.K Zero Balance Bank</h1>
+
+        <p>Manager Search</p>
+
+    </div>
+
+
+    <!-- SEARCH CARD -->
+
+    <div class="card">
+
+        <h2>Search Manager</h2>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+        <form id="searchForm">
+
+            <div class="form-group">
+
+                <label>
+                    Manager Mobile Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="mobileNumber"
+                    placeholder="Enter 10 digit mobile number"
+                    maxlength="10"
+                    inputmode="numeric"
+                    required>
+
+            </div>
+
+
+            <button type="submit">
+
+                Search Manager
+
+            </button>
+
+        </form>
+
+
+        <!-- RESULT -->
+
+        <div
+            class="result"
+            id="result">
+
+            <h3>
+                Manager Found
+            </h3>
+
+
+            <div class="result-row">
+
+                <span class="result-label">
+                    Full Name
+                </span>
+
+                <span
+                    class="result-value"
+                    id="fullName">
+                </span>
+
+            </div>
+
+
+            <div class="result-row">
+
+                <span class="result-label">
+                    Manager Account Number
+                </span>
+
+                <span
+                    class="result-value account"
+                    id="accountNumber">
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        S.K Zero Balance Bank
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   LOCAL STORAGE KEY
+========================================= */
+
+const STORAGE_KEY =
+    "sk_zero_balance_manager";
+
+
+/* =========================================
+   SEARCH FORM
+========================================= */
+
+document
+    .getElementById("searchForm")
+    .addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            const mobile =
+                document
+                    .getElementById(
+                        "mobileNumber"
+                    )
+                    .value
+                    .trim();
+
+
+            const message =
+                document
+                    .getElementById(
+                        "message"
+                    );
+
+
+            const result =
+                document
+                    .getElementById(
+                        "result"
+                    );
+
+
+            /* HIDE OLD RESULT */
+
+            result.style.display =
+                "none";
+
+            message.style.display =
+                "none";
+
+
+            /* MOBILE VALIDATION */
+
+            if (
+                !/^[0-9]{10}$/.test(mobile)
+            ) {
+
+                showMessage(
+                    "Please enter a valid 10-digit mobile number.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            /* GET SAVED MANAGER */
+
+            const stored =
+                localStorage.getItem(
+                    STORAGE_KEY
+                );
+
+
+            if (!stored) {
+
+                showMessage(
+                    "No manager account has been registered.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            const manager =
+                JSON.parse(stored);
+
+
+            /* SEARCH MOBILE */
+
+            if (
+                manager.mobile === mobile
+            ) {
+
+
+                /* SHOW FULL NAME */
+
+                document
+                    .getElementById(
+                        "fullName"
+                    )
+                    .textContent =
+                    manager.fullName;
+
+
+                /* SHOW ACCOUNT NUMBER */
+
+                document
+                    .getElementById(
+                        "accountNumber"
+                    )
+                    .textContent =
+                    manager.accountNumber;
+
+
+                /* SHOW RESULT */
+
+                result.style.display =
+                    "block";
+
+
+                showMessage(
+                    "Manager found successfully.",
+                    "success"
+                );
+
+
+            } else {
+
+                showMessage(
+                    "No manager found with this mobile number.",
+                    "error"
+                );
+
+            }
+
+        }
+    );
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+function showMessage(
+    text,
+    type
+) {
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.textContent =
+        text;
+
+
+    message.className =
+        "message " + type;
+
+
+    message.style.display =
+        "block";
+
+}
+
+</script>
+
+</body>
+</html>
