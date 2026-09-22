@@ -319,6 +319,7 @@ button:hover{
 
 </div>
 
+<script src="../api-config.js"></script>
 <script>
 const EMPLOYEE_KEY = "sk_zero_balance_employee";
 const CUSTOMER_KEY = "sk_zero_balance_customer";
@@ -409,7 +410,7 @@ function saveEmployee(firstName, lastName, mobile, email, dob, password, photo, 
   formData.append("account_number", accountNumber);
   formData.append("pin", pin);
 
-  fetch("../register.php", { method: "POST", body: formData })
+  fetch(API_BASE_URL + "/register", { method: "POST", body: formData })
     .then(response => response.json())
     .then(result => {
       if(!result.success){
@@ -719,7 +720,7 @@ function approveCustomer(){
   formData.append("account_number", customer.accountNumber);
   formData.append("approval", "employee");
 
-  fetch("../approve_customer.php", { method: "POST", body: formData })
+  fetch(API_BASE_URL + "/customer/approve", { method: "POST", body: formData })
     .then(response => response.json())
     .then(result => {
       if(!result.success){

@@ -320,6 +320,7 @@ button:active{
 
 </div>
 
+<script src="../../api-config.js"></script>
 <script>
 const CUSTOMER_KEY = "sk_zero_balance_customer";
 
@@ -472,7 +473,7 @@ function registerCustomer(){
   formData.append("account_number", customer.accountNumber);
   formData.append("customer_id", customer.customerId);
 
-  fetch("../../register.php", { method: "POST", body: formData })
+  fetch(API_BASE_URL + "/register", { method: "POST", body: formData })
     .then(response => response.json())
     .then(result => {
       if(!result.success){
